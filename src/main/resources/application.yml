@@ -1,0 +1,52 @@
+server:
+  port: 8080
+
+logging:
+  level:
+    root: info
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: root
+    password: root
+    driver-class-name: org.postgresql.Driver
+
+  mail:
+    host: localhost
+    port: 4025
+    properties:
+      mail:
+        smtp:
+          auth: false
+          starttls:
+            enable: false
+
+  flyway:
+    schemas: ${db-schema}
+    locations: classpath:db/migration
+
+  profiles:
+    include: dev
+
+  jpa:
+    open-in-view: false
+    database: postgresql
+    properties:
+      jakarta:
+        persistence:
+          schema-generation:
+            database:
+              action: validate
+      hibernate:
+        default_schema: ${db-schema}
+        jdbc:
+          time_zone: UTC
+
+  jackson:
+    serialization:
+      write_dates_as_timestamps: false
+
+  sql:
+    init:
+      platform: postgres

@@ -1,0 +1,5 @@
+db-schema: filmood
+
+server:
+  error:
+    include-binding-errors: always
