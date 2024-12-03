@@ -3,3 +3,8 @@ db-schema: filmood
 server:
   error:
     include-binding-errors: always
+  servlet:
+    session:
+      cookie:
+        http-only: true
+        secure: true
