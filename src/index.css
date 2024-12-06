@@ -1,0 +1,72 @@
+:root {
+  --primary-color: #3282B8;
+  --secondary-color: #0F4C75;
+  --background-color: #1B262C;
+  --text-color: #bbe1fa;
+  --yellow: #F2D230;
+}
+
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+
+.btn-primary {
+  background-color: var(--yellow) !important;
+  border-color: var(--yellow) !important;
+  color: var(--background-color);
+}
+
+.btn-secondary {
+  background-color: var(--secondary-color);
+  border-color: var(--secondary-color);
+
+}
+
+.btn-tertiary {
+  background-color: var(--text-color);
+  border-color: var(--text-color);
+  color: var(--background-color);
+}
+
+
+.card {
+  background-color: var(--secondary-color);
+  color: var(--text-color);
+}
+
+.navigation {
+  background-color: var(--secondary-color) !important;
+  color: var(--text-color) !important;
+}
+
+.navigation .nav-link {
+  color: var(--text-color) !important;
+}
+
+.navigation .navbar-brand {
+  color: var(--yellow) !important;
+}
+
+.movie-title {
+  color: var(--yellow);
+}
+
+.movie-image {
+  height: 200px;
+  object-fit: cover;
+  width: 100%;
+}
