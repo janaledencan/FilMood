@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 function MovieCard({ movie }) {
     return (
         <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
-            <Card style={{ width: '18rem' }} className="my-3 shadow-lg">
+            <Card style={{ width: '18rem' }} className="my-3 mx-2 shadow-lg">
                 <Card.Img variant="top" className="movie-image" src={movie.image} />
                 <Card.Body>
                     <Card.Title>{movie.name}</Card.Title>

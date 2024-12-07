@@ -70,3 +70,9 @@ code {
   object-fit: cover;
   width: 100%;
 }
+
+.modal-body .form-label,
+.modal-title {
+  color: var(--secondary-color);
+  font-weight: bold;
+}

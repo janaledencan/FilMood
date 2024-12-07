@@ -27,10 +27,14 @@ function Home() {
                         perPage: 4,
                         arrows: false,
                         drag: "free",
-                        gap: "2rem",
+                        gap: "1rem", // Default gap between slides
                         breakpoints: {
-                            800: { perPage: 2 },
-                            450: { perPage: 1 },
+                            1400: { perPage: 4, gap: "5rem" }, // For screens <= 1400px
+                            1200: { perPage: 3, gap: "2rem" },
+                            1000: { perPage: 2, gap: "2rem" },
+                            800: { perPage: 2, gap: "2.5rem" },    // For screens <= 800px
+                            770: { perPage: 2, gap: "4 rem" },
+                            450: { perPage: 1, gap: "3rem" },    // For screens <= 450px
                         },
                     }}
                 >
