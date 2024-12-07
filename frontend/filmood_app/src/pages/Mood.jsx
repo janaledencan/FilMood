@@ -4,12 +4,12 @@ import styled from "styled-components";
 
 function Mood() {
     const moods = [
-        { icon: "😊", label: "Happy" },
-        { icon: "💪", label: "Motivated" },
-        { icon: "❤️", label: "In Love" },
+        { icon: "💪", label: "Brave" },
+        { icon: "💡", label: "Motivated" },
+        { icon: "🥰", label: "In Love" },
         { icon: "😢", label: "Sad" },
-        { icon: "😐", label: "Moodless" },
-        { icon: "😡", label: "Angry" },
+        { icon: "🧐", label: "Curious" },
+        { icon: "🤩", label: "Excited" },
     ];
 
     return (
