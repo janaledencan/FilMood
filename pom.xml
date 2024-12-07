@@ -42,6 +42,7 @@
 		<apache-commons.version>3.12.0</apache-commons.version>
 		<swagger-v3.version>2.2.11</swagger-v3.version>
 		<flyway-spring-test.version>7.0.0</flyway-spring-test.version>
+		<okhttp.version>4.4.0</okhttp.version>
 	</properties>
 
 	<dependencies>
@@ -130,6 +131,11 @@
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<version>${lombok.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.squareup.okhttp3</groupId>
+			<artifactId>okhttp</artifactId>
+			<version>${okhttp.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.flywaydb</groupId>

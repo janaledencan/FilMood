@@ -14,3 +14,13 @@ create table user_account
     constraint UQ__USERNAME unique (username),
     constraint UQ__EMAIL unique (email)
 );
+
+create table genre
+(
+    id                   uuid                  not null primary key,
+    name                 varchar(20)           not null,
+    genre_id             integer               not null,
+    version              integer               not null,
+    created_at           timestamp             not null,
+    modified_at          timestamp             not null
+);
