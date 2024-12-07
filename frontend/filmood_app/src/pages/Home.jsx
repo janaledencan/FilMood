@@ -6,21 +6,21 @@ import "@splidejs/react-splide/css";
 import styled from "styled-components";
 import MovieCard from '../components/MovieCard';
 
-function Home() {
+function Home({ category }) {
     const [movies, setMovies] = useState([]);
 
     useEffect(() => {
-        // Fetch movies from the backend
-        fetch('/api/movies') // Replace with API endpoint
+        // Fetch movies based on the selected category
+        fetch(`/api/movies?category=${category}`) // Replace with API endpoint
             .then((res) => res.json())
             .then((data) => setMovies(data))
             .catch((err) => console.error('Error fetching movies:', err));
-    }, []);
+    }, [category]);
 
     return (
         <Container>
             <Wrapper>
-                <h2>Movie Recommendations</h2>
+                <h2>{category.replace('_', ' ').toUpperCase()}</h2>
 
                 <Splide
                     options={{
