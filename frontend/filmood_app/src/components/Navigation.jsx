@@ -17,6 +17,7 @@ function Navigation({ isLoggedIn, handleLogout }) {
                                 <Nav.Link as={Link} to="/">Home</Nav.Link>
                                 <Nav.Link as={Link} to="/mood">Mood</Nav.Link>
                                 <Nav.Link as={Link} to="/profile">Profile</Nav.Link>
+                                <Nav.Link as={Link} to="/wishlist">Wishlist</Nav.Link>
                             </>
                         ) : (
                             <Nav.Link as={Link} to="/login">Login/Signup</Nav.Link>

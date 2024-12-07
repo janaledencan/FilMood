@@ -6,6 +6,7 @@ import Home from './pages/Home';
 import Profile from './pages/Profile';
 import Mood from './pages/Mood';
 import FilmDetails from "./pages/FilmDetails";
+import Wishlist from './pages/Wishlist';
 import logo from './logo.svg';
 import './App.css';
 
@@ -22,6 +23,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/mood" element={!isLoggedIn ? <Mood /> : <LoginSignUp onLogin={handleLogin} />} />
         <Route path="/profile" element={!isLoggedIn ? <Profile /> : <LoginSignUp onLogin={handleLogin} />} />
+        <Route path="/wishlist" element={!isLoggedIn ? <Wishlist /> : <LoginSignUp onLogin={handleLogin} />} />
         <Route path="/details" element={<FilmDetails />} />
       </Routes>
     </Router>

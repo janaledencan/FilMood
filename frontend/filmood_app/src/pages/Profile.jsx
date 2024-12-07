@@ -70,23 +70,6 @@ function Profile() {
                 </Col>
             </Row>
 
-            <h3 className="mt-5">Your Wishlist</h3>
-            <Row>
-                {wishlist.map((movie) => (
-                    <Col key={movie.id} xs={12} sm={6} md={4} lg={3} className="my-3">
-                        <Card>
-                            <Card.Img variant="top" src={movie.image} />
-                            <Card.Body>
-                                <Card.Title>{movie.name}</Card.Title>
-                                <Card.Text>
-                                    <strong>Year:</strong> {movie.year} <br />
-                                    <strong>Genre:</strong> {movie.genre}
-                                </Card.Text>
-                            </Card.Body>
-                        </Card>
-                    </Col>
-                ))}
-            </Row>
 
             {/* Modal for editing user data */}
             <Modal show={showModal} onHide={() => setShowModal(false)}>
