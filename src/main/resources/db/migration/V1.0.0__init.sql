@@ -6,6 +6,7 @@ create table user_account
     username             varchar(36)           not null,
     email                varchar(255)          not null,
     age                  integer               not null,
+    gender               varchar(10)           not null,
     password             varchar(255)          not null,
     active               boolean               not null,
     version              integer               not null,

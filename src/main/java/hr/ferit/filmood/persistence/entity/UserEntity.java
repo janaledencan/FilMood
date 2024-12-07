@@ -43,6 +43,10 @@ public class UserEntity extends AbstractEntity {
     @Column(name = "email")
     private String email;
 
+    @NotBlank
+    @Column(name = "gender")
+    private String gender;
+
     @NotNull
     @Column(name = "age")
     private Integer age;
