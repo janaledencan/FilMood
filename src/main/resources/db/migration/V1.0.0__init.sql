@@ -23,5 +23,23 @@ create table genre
     genre_id             integer               not null,
     version              integer               not null,
     created_at           timestamp             not null,
-    modified_at          timestamp             not null
+    modified_at          timestamp             not null,
+    constraint UQ__GENRE_ID unique (genre_id),
+);
+
+create table movie
+(
+    id                   uuid                  not null primary key,
+    movie_id             integer               not null,
+    user_id              uuid                  not null,
+    genres               varchar(100)          not null,
+    title                varchar(100)          not null,
+    year                 integer               not null,
+    vote_average         real                  not null,
+    user_rating          integer               not null,
+    poster_path          varchar(100),
+    version              integer               not null,
+    created_at           timestamp             not null,
+    modified_at          timestamp             not null,
+    constraint FK__MOVIE__USER_ID foreign key (user_id) references user_account (id)
 );

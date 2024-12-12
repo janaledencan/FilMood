@@ -9,7 +9,11 @@ public class CommonConstants {
 
     public static final String GENDER_REGEX = "^(Male|Female|Other)$";
 
+    public static final String MOVIE_LIST_REGEX = "^(now_playing|popular|top_rated|upcoming)$";
+
     public static final String BASE_PATH = "/api/v1";
 
     public static final String AUTH_PATH = BASE_PATH + "/auth";
+
+    public static final String API_BASE_URL = "https://api.themoviedb.org/3";
 }

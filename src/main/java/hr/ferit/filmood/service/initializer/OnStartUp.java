@@ -17,6 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 import java.util.List;
 
+import static hr.ferit.filmood.common.CommonConstants.API_BASE_URL;
+
 @Component
 public class OnStartUp implements ApplicationListener<ContextRefreshedEvent> {
 
@@ -25,6 +27,7 @@ public class OnStartUp implements ApplicationListener<ContextRefreshedEvent> {
     private final OkHttpClient okHttpClient;
     private final ObjectMapper objectMapper;
     private final GenreMapper genreMapper;
+    private final static String GET_GENRES_URL = "/genre/movie/list?language=en";
 
     public OnStartUp(GenreRepository genreRepository, OkHttpClient okHttpClient,
                      FilMoodProperties filMoodProperties, ObjectMapper objectMapper,
@@ -45,7 +48,7 @@ public class OnStartUp implements ApplicationListener<ContextRefreshedEvent> {
 
         if(genresInDb.isEmpty()) {
             Request request = new Request.Builder()
-                    .url("https://api.themoviedb.org/3/genre/movie/list?language=en")
+                    .url(String.format("%s%s", API_BASE_URL, GET_GENRES_URL))
                     .get()
                     .addHeader("accept", "application/json")
                     .addHeader("Authorization", String.format("Bearer %s", filMoodProperties.getApiBearerKey()))
