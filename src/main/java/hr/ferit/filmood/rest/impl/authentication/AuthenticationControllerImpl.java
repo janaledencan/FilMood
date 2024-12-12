@@ -2,6 +2,7 @@ package hr.ferit.filmood.rest.impl.authentication;
 
 import hr.ferit.filmood.rest.api.authentication.AuthenticationController;
 import hr.ferit.filmood.rest.api.authentication.request.AuthRequest;
+import hr.ferit.filmood.rest.api.authentication.request.CreateUserRequest;
 import hr.ferit.filmood.rest.api.authentication.response.LogoutResponse;
 import hr.ferit.filmood.rest.api.authentication.response.SessionExpiredResponse;
 import hr.ferit.filmood.service.AuthenticationService;
@@ -21,6 +22,11 @@ public class AuthenticationControllerImpl implements AuthenticationController {
     @Override
     public void authenticate(AuthRequest authRequest, HttpServletRequest request, HttpServletResponse response) {
         authenticationService.authenticate(authRequest, request, response);
+    }
+
+    @Override
+    public void signup(CreateUserRequest createUserRequest) {
+        authenticationService.signup(createUserRequest);
     }
 
     @Override

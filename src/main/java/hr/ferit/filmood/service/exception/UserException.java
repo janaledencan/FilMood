@@ -26,4 +26,12 @@ public class UserException extends AbstractServiceException {
     public static UserException notFound() {
         throw new UserException(UserErrorKey.NOT_FOUND, HttpStatus.NOT_FOUND);
     }
+
+    public static UserException emailAlreadyExists() {
+        throw new UserException(UserErrorKey.EMAIL_ALREADY_EXISTS, HttpStatus.BAD_REQUEST);
+    }
+
+    public static UserException usernameAlreadyExists() {
+        throw new UserException(UserErrorKey.USERNAME_ALREADY_EXISTS, HttpStatus.BAD_REQUEST);
+    }
 }

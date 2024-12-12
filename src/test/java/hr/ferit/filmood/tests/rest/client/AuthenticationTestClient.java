@@ -1,6 +1,7 @@
 package hr.ferit.filmood.tests.rest.client;
 
 import hr.ferit.filmood.rest.api.authentication.request.AuthRequest;
+import hr.ferit.filmood.rest.api.authentication.request.CreateUserRequest;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 
@@ -14,5 +15,13 @@ public class AuthenticationTestClient {
                 .given()
                 .body(request)
                 .post(String.format("%s/login", AUTH_PATH));
+    }
+
+    public static Response signup(CreateUserRequest request) {
+
+        return RestAssured
+                .given()
+                .body(request)
+                .post(String.format("%s/signup", AUTH_PATH));
     }
 }

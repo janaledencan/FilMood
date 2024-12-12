@@ -4,6 +4,8 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -13,6 +15,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import static hr.ferit.filmood.common.CommonConstants.EMAIL_REGEX;
+import static hr.ferit.filmood.common.CommonConstants.GENDER_REGEX;
+import static hr.ferit.filmood.common.CommonConstants.PASSWORD_REGEX;
 
 @Getter
 @Setter
@@ -44,14 +48,18 @@ public class UserEntity extends AbstractEntity {
     private String email;
 
     @NotBlank
+    @Pattern(regexp = GENDER_REGEX)
     @Column(name = "gender")
     private String gender;
 
     @NotNull
+    @Min(0)
+    @Max(120)
     @Column(name = "age")
     private Integer age;
 
     @NotBlank
+    @Pattern(regexp = PASSWORD_REGEX)
     @Column(name = "password")
     private String password;
 
@@ -60,13 +68,14 @@ public class UserEntity extends AbstractEntity {
     private Boolean isActive;
 
     public UserEntity(String firstName, String lastName, String username,
-                      String email, Integer age, String password, Boolean isActive) {
+                      String email, Integer age, String password, String gender, Boolean isActive) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
         this.email = email;
         this.age = age;
         this.password = password;
+        this.gender = gender;
         this.isActive = isActive;
     }
 }

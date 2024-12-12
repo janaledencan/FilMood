@@ -13,7 +13,6 @@ import org.flywaydb.test.annotation.FlywayTest;
 import org.flywaydb.test.junit5.annotation.FlywayTestExtension;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -51,10 +50,6 @@ public abstract class BaseIT {
 
     @Container
     private static final PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres");
-
-    @BeforeAll
-    static void beforeAll() {
-    }
 
     @AfterAll
     static void afterAll() {
