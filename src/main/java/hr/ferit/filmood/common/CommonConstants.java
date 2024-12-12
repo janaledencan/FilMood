@@ -16,4 +16,8 @@ public class CommonConstants {
     public static final String AUTH_PATH = BASE_PATH + "/auth";
 
     public static final String API_BASE_URL = "https://api.themoviedb.org/3";
+
+    public static final String MOVIE_PATH = BASE_PATH + "/movie";
+
+    public static final Integer DEFAULT_API_PAGE_SIZE = 20;
 }

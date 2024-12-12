@@ -14,7 +14,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "genre")
+@Table(name = "movie")
 public class MovieEntity extends AbstractEntity {
 
     @ManyToOne

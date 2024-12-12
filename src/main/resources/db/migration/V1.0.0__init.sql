@@ -24,7 +24,7 @@ create table genre
     version              integer               not null,
     created_at           timestamp             not null,
     modified_at          timestamp             not null,
-    constraint UQ__GENRE_ID unique (genre_id),
+    constraint UQ__GENRE_ID unique (genre_id)
 );
 
 create table movie
