@@ -2,12 +2,13 @@ package hr.ferit.filmood.rest.impl.authentication;
 
 import hr.ferit.filmood.rest.api.authentication.AuthenticationController;
 import hr.ferit.filmood.rest.api.authentication.request.AuthRequest;
-import hr.ferit.filmood.rest.api.authentication.request.CreateUserRequest;
+import hr.ferit.filmood.rest.api.authentication.request.CreateUpdateUserRequest;
 import hr.ferit.filmood.rest.api.authentication.response.LogoutResponse;
 import hr.ferit.filmood.rest.api.authentication.response.SessionExpiredResponse;
 import hr.ferit.filmood.service.AuthenticationService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -25,8 +26,13 @@ public class AuthenticationControllerImpl implements AuthenticationController {
     }
 
     @Override
-    public void signup(CreateUserRequest createUserRequest) {
-        authenticationService.signup(createUserRequest);
+    public void signup(CreateUpdateUserRequest createUpdateUserRequest) {
+        authenticationService.signup(createUpdateUserRequest);
+    }
+
+    @Override
+    public void update(CreateUpdateUserRequest createUpdateUserRequest, Authentication authentication) {
+        authenticationService.update(createUpdateUserRequest, authentication);
     }
 
     @Override

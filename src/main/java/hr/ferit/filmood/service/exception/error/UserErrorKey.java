@@ -5,6 +5,7 @@ import hr.ferit.filmood.common.exception.error.ErrorKey;
 public enum UserErrorKey implements ErrorKey {
     NOT_FOUND,
     EMAIL_ALREADY_EXISTS,
+    BLANK_PASSWORD,
     USERNAME_ALREADY_EXISTS;
 
     @Override

@@ -1,10 +1,12 @@
 package hr.ferit.filmood.tests.rest.tests;
 
+import hr.ferit.filmood.persistence.entity.UserEntity;
 import hr.ferit.filmood.persistence.repository.UserRepository;
-import hr.ferit.filmood.rest.api.authentication.request.CreateUserRequest;
+import hr.ferit.filmood.rest.api.authentication.request.CreateUpdateUserRequest;
 import hr.ferit.filmood.tests.BaseIT;
 import hr.ferit.filmood.tests.rest.client.AuthenticationTestClient;
 import hr.ferit.filmood.tests.rest.factory.AuthenticationFactory;
+import io.restassured.response.Response;
 import org.flywaydb.test.annotation.FlywayTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -13,6 +15,9 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import java.util.Optional;
 
 import static hr.ferit.filmood.tests.rest.constant.AuthenticationConstants.EXISTING_USER_PASSWORD;
 import static hr.ferit.filmood.tests.rest.constant.AuthenticationConstants.EXISTING_USER_USERNAME;
@@ -29,6 +34,8 @@ public class AuthenticationApiIT extends BaseIT {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Test
     @DisplayName("Existing user logs in - 200 Ok")
@@ -64,7 +71,7 @@ public class AuthenticationApiIT extends BaseIT {
     public void givenValidRequest_whenSignUp_success200() {
 
         AuthenticationTestClient
-                .signup(AuthenticationFactory.createUserRequest(
+                .signup(AuthenticationFactory.createUpdateUserRequest(
                         NEW_USER_USERNAME,
                         NEW_USER_PASSWORD,
                         NEW_USER_FIRST_NAME,
@@ -83,11 +90,76 @@ public class AuthenticationApiIT extends BaseIT {
     @MethodSource("hr.ferit.filmood.tests.rest.parameters.UserParameters#badRequestForCreateUser")
     @DisplayName("User signs up - 400 Bad request")
     @FlywayTest(locationsForMigrate = {"migrations/users"})
-    public void givenInvalidRequest_whenSignUp_failure400(CreateUserRequest createUserRequest, String name) {
+    public void givenInvalidRequest_whenSignUp_failure400(CreateUpdateUserRequest createUpdateUserRequest, String name) {
 
         AuthenticationTestClient
-                .signup(createUserRequest)
+                .signup(createUpdateUserRequest)
                 .then()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    @DisplayName("User updates profile - 200 Ok")
+    @FlywayTest(locationsForMigrate = {"migrations/users"})
+    public void givenValidRequest_whenUpdate_success200() {
+
+        Response loginResponse = AuthenticationTestClient.authenticate(
+                AuthenticationFactory.authRequest(
+                        EXISTING_USER_USERNAME,
+                        EXISTING_USER_PASSWORD)
+        );
+
+        AuthenticationTestClient
+                .update(AuthenticationFactory.createUpdateUserRequest(
+                                NEW_USER_USERNAME,
+                                NEW_USER_PASSWORD,
+                                NEW_USER_FIRST_NAME,
+                                NEW_USER_LAST_NAME,
+                                NEW_USER_EMAIL,
+                                NEW_USER_AGE,
+                                NEW_USER_GENDER),
+                        loginResponse.getCookie("JSESSIONID")
+                )
+                .then()
+                .statusCode(HttpStatus.OK.value());
+
+        Assertions.assertEquals(1, userRepository.findAll().size());
+
+        Optional<UserEntity> updatedUserOpt = userRepository.findByUsername(NEW_USER_USERNAME);
+
+        if(updatedUserOpt.isPresent()) {
+            UserEntity updatedUser = updatedUserOpt.get();
+            Assertions.assertEquals(updatedUser.getUsername(), NEW_USER_USERNAME);
+            Assertions.assertTrue(bCryptPasswordEncoder.matches(NEW_USER_PASSWORD, updatedUser.getPassword()));
+            Assertions.assertEquals(updatedUser.getFirstName(), NEW_USER_FIRST_NAME);
+            Assertions.assertEquals(updatedUser.getLastName(), NEW_USER_LAST_NAME);
+            Assertions.assertEquals(updatedUser.getEmail(), NEW_USER_EMAIL);
+            Assertions.assertEquals(updatedUser.getAge(), NEW_USER_AGE);
+            Assertions.assertEquals(updatedUser.getGender(), NEW_USER_GENDER);
+        } else {
+            Assertions.fail();
+        }
+
+        AuthenticationTestClient.logout();
+    }
+
+    @ParameterizedTest(name = "{1}")
+    @MethodSource("hr.ferit.filmood.tests.rest.parameters.UserParameters#badRequestForUpdateUser")
+    @DisplayName("User updates profile - 400 Bad request")
+    @FlywayTest(locationsForMigrate = {"migrations/users"})
+    public void givenInvalidRequest_whenUpdate_failure400(CreateUpdateUserRequest createUpdateUserRequest, String name) {
+
+        Response loginResponse = AuthenticationTestClient.authenticate(
+                AuthenticationFactory.authRequest(
+                        EXISTING_USER_USERNAME,
+                        EXISTING_USER_PASSWORD)
+        );
+
+        AuthenticationTestClient
+                .update(createUpdateUserRequest, loginResponse.getCookie("JSESSIONID"))
+                .then()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+
+        AuthenticationTestClient.logout();
     }
 }

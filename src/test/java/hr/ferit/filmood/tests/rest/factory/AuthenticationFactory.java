@@ -1,7 +1,7 @@
 package hr.ferit.filmood.tests.rest.factory;
 
 import hr.ferit.filmood.rest.api.authentication.request.AuthRequest;
-import hr.ferit.filmood.rest.api.authentication.request.CreateUserRequest;
+import hr.ferit.filmood.rest.api.authentication.request.CreateUpdateUserRequest;
 
 public class AuthenticationFactory {
 
@@ -9,14 +9,14 @@ public class AuthenticationFactory {
         return new AuthRequest(username, password);
     }
 
-    public static CreateUserRequest createUserRequest(String username,
-                                                      String password,
-                                                      String firstName,
-                                                      String lastName,
-                                                      String email,
-                                                      Integer age,
-                                                      String gender) {
+    public static CreateUpdateUserRequest createUpdateUserRequest(String username,
+                                                                  String password,
+                                                                  String firstName,
+                                                                  String lastName,
+                                                                  String email,
+                                                                  Integer age,
+                                                                  String gender) {
 
-        return new CreateUserRequest(username, password, firstName, lastName, email, age, gender);
+        return new CreateUpdateUserRequest(username, password, firstName, lastName, email, age, gender);
     }
 }

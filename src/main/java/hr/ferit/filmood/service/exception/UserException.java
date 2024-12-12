@@ -34,4 +34,8 @@ public class UserException extends AbstractServiceException {
     public static UserException usernameAlreadyExists() {
         throw new UserException(UserErrorKey.USERNAME_ALREADY_EXISTS, HttpStatus.BAD_REQUEST);
     }
+
+    public static UserException blankPassword() {
+        throw new UserException(UserErrorKey.BLANK_PASSWORD, HttpStatus.BAD_REQUEST);
+    }
 }
