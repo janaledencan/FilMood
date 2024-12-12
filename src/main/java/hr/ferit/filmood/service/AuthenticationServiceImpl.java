@@ -6,7 +6,9 @@ import hr.ferit.filmood.rest.api.authentication.request.AuthRequest;
 import hr.ferit.filmood.rest.api.authentication.request.CreateUpdateUserRequest;
 import hr.ferit.filmood.rest.api.authentication.response.LogoutResponse;
 import hr.ferit.filmood.rest.api.authentication.response.SessionExpiredResponse;
+import hr.ferit.filmood.rest.api.authentication.response.UserResponse;
 import hr.ferit.filmood.service.exception.UserException;
+import hr.ferit.filmood.service.mapper.UserMapper;
 import hr.ferit.filmood.service.utils.UserUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -32,14 +34,16 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final SecurityContextRepository securityContextRepository;
     private final SecurityContextHolderStrategy securityContextHolderStrategy = SecurityContextHolder.getContextHolderStrategy();
     private final UserUtils userUtils;
+    private final UserMapper userMapper;
 
     public AuthenticationServiceImpl(AuthenticationManager authenticationManager, UserRepository userRepository,
-                                     BCryptPasswordEncoder bCryptPasswordEncoder, SecurityContextRepository securityContextRepository, UserUtils userUtils) {
+                                     BCryptPasswordEncoder bCryptPasswordEncoder, SecurityContextRepository securityContextRepository, UserUtils userUtils, UserMapper userMapper) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.securityContextRepository = securityContextRepository;
         this.userUtils = userUtils;
+        this.userMapper = userMapper;
     }
 
     @Override
@@ -77,6 +81,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 true);
 
         userRepository.save(user);
+    }
+
+    @Override
+    public UserResponse getCurrentUser(Authentication authentication) {
+        return userMapper.mapResponse(userUtils.getCurrentUser(authentication));
     }
 
     @Override

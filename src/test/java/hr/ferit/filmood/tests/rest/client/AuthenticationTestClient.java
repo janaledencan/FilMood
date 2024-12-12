@@ -34,6 +34,14 @@ public class AuthenticationTestClient {
                 .post(String.format("%s/update", AUTH_PATH));
     }
 
+    public static Response getCurrentUser(String sessionId) {
+
+        return RestAssured
+                .given()
+                .cookie("JSESSIONID", sessionId)
+                .get(String.format("%s/profile-info", AUTH_PATH));
+    }
+
     public static void logout() {
 
         RestAssured.post(String.format("%s/logout", AUTH_PATH));

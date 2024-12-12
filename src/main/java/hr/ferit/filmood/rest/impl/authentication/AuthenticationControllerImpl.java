@@ -5,6 +5,7 @@ import hr.ferit.filmood.rest.api.authentication.request.AuthRequest;
 import hr.ferit.filmood.rest.api.authentication.request.CreateUpdateUserRequest;
 import hr.ferit.filmood.rest.api.authentication.response.LogoutResponse;
 import hr.ferit.filmood.rest.api.authentication.response.SessionExpiredResponse;
+import hr.ferit.filmood.rest.api.authentication.response.UserResponse;
 import hr.ferit.filmood.service.AuthenticationService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -28,6 +29,11 @@ public class AuthenticationControllerImpl implements AuthenticationController {
     @Override
     public void signup(CreateUpdateUserRequest createUpdateUserRequest) {
         authenticationService.signup(createUpdateUserRequest);
+    }
+
+    @Override
+    public UserResponse getCurrentUser(Authentication authentication) {
+        return authenticationService.getCurrentUser(authentication);
     }
 
     @Override

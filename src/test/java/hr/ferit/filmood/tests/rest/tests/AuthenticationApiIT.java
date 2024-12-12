@@ -3,6 +3,7 @@ package hr.ferit.filmood.tests.rest.tests;
 import hr.ferit.filmood.persistence.entity.UserEntity;
 import hr.ferit.filmood.persistence.repository.UserRepository;
 import hr.ferit.filmood.rest.api.authentication.request.CreateUpdateUserRequest;
+import hr.ferit.filmood.rest.api.authentication.response.UserResponse;
 import hr.ferit.filmood.tests.BaseIT;
 import hr.ferit.filmood.tests.rest.client.AuthenticationTestClient;
 import hr.ferit.filmood.tests.rest.factory.AuthenticationFactory;
@@ -159,6 +160,43 @@ public class AuthenticationApiIT extends BaseIT {
                 .update(createUpdateUserRequest, loginResponse.getCookie("JSESSIONID"))
                 .then()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
+
+        AuthenticationTestClient.logout();
+    }
+
+    @Test
+    @DisplayName("User gets profile info - 200 Ok")
+    @FlywayTest(locationsForMigrate = {"migrations/users"})
+    public void givenValidRequest_whenGetCurrentUser_success200() {
+
+        Response loginResponse = AuthenticationTestClient.authenticate(
+                AuthenticationFactory.authRequest(
+                        EXISTING_USER_USERNAME,
+                        EXISTING_USER_PASSWORD)
+        );
+
+        UserResponse response = AuthenticationTestClient
+                .getCurrentUser(loginResponse.getCookie("JSESSIONID"))
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .and()
+                .extract()
+                .body()
+                .as(UserResponse.class);
+
+        Optional<UserEntity> userOpt = userRepository.findByUsername(EXISTING_USER_USERNAME);
+
+        if(userOpt.isPresent()) {
+            UserEntity user = userOpt.get();
+            Assertions.assertEquals(user.getUsername(), response.username());
+            Assertions.assertEquals(user.getFirstName(), response.firstName());
+            Assertions.assertEquals(user.getLastName(), response.lastName());
+            Assertions.assertEquals(user.getEmail(), response.email());
+            Assertions.assertEquals(user.getAge(), response.age());
+            Assertions.assertEquals(user.getGender(), response.gender());
+        } else {
+            Assertions.fail();
+        }
 
         AuthenticationTestClient.logout();
     }
