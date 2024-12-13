@@ -8,8 +8,11 @@ import hr.ferit.filmood.persistence.entity.MovieEntity;
 import hr.ferit.filmood.persistence.entity.UserEntity;
 import hr.ferit.filmood.persistence.repository.GenreRepository;
 import hr.ferit.filmood.persistence.repository.MovieRepository;
+import hr.ferit.filmood.rest.api.genre.dto.GenreDTO;
 import hr.ferit.filmood.rest.api.movie.dto.MovieApiDTO;
+import hr.ferit.filmood.rest.api.movie.dto.MovieApiDetailedDTO;
 import hr.ferit.filmood.rest.api.movie.dto.MovieDTO;
+import hr.ferit.filmood.rest.api.movie.dto.MovieDetailedDTO;
 import hr.ferit.filmood.rest.api.movie.request.AddMovieToLibraryRequest;
 import hr.ferit.filmood.rest.api.movie.response.MovieApiPagedResponse;
 import hr.ferit.filmood.rest.api.movie.response.MoviePagedResponse;
@@ -76,7 +79,7 @@ public class MovieServiceImpl implements MovieService {
 
         UserEntity currentUser = userUtils.getCurrentUser(authentication);
 
-        if(movieRepository.findFirstByUserAndMovieId(currentUser, addMovieToLibraryRequest.movieId()).isPresent()) {
+        if (movieRepository.findFirstByUserAndMovieId(currentUser, addMovieToLibraryRequest.movieId()).isPresent()) {
             throw MovieException.movieAlreadyInLibrary();
         }
 
@@ -104,6 +107,55 @@ public class MovieServiceImpl implements MovieService {
         movieRepository.delete(movie);
     }
 
+    @Override
+    public MovieDetailedDTO getMovie(Integer movieId, Authentication authentication) {
+
+        MovieApiDetailedDTO movieRetrieved;
+
+        Request request = new Request.Builder()
+                .url(String.format("%s%s/%s", API_BASE_URL, GET_MOVIE_LIST_URL, movieId))
+                .get()
+                .addHeader("accept", "application/json")
+                .addHeader("Authorization", String.format("Bearer %s", filMoodProperties.getApiBearerKey()))
+                .build();
+
+        try (Response response = okHttpClient.newCall(request).execute()) {
+
+            if (!response.isSuccessful()) {
+                throw MovieException.apiException(MovieErrorKey.API_ERROR, HttpStatus.valueOf(response.code()), response.message());
+            }
+
+            ResponseBody body = response.body();
+            movieRetrieved = objectMapper.readValue(body.string(), MovieApiDetailedDTO.class);
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        List<Integer> library = movieRepository.findAllByUser(userUtils.getCurrentUser(authentication))
+                .stream()
+                .map(MovieEntity::getMovieId)
+                .toList();
+
+        return new MovieDetailedDTO(
+                movieRetrieved.title(),
+                movieRetrieved.genres().stream().map(GenreDTO::name).toList(),
+                movieRetrieved.movieId(),
+                Integer.valueOf(movieRetrieved.releaseDate().substring(0, 4)),
+                movieRetrieved.voteAverage(),
+                movieRetrieved.posterPath(),
+                movieRetrieved.budget(),
+                movieRetrieved.overview(),
+                movieRetrieved.imdbId(),
+                movieRetrieved.revenue(),
+                movieRetrieved.runtime(),
+                movieRetrieved.releaseStatus(),
+                movieRetrieved.tagline(),
+                movieRetrieved.voteCount(),
+                library.contains(movieRetrieved.movieId())
+        );
+    }
+
     private MoviePagedResponse callApiAndReturnMoviePagedResponse(Request request, Integer number, Authentication authentication) {
 
         List<MovieApiDTO> apiMovies = new ArrayList<>();
@@ -119,11 +171,12 @@ public class MovieServiceImpl implements MovieService {
             ResponseBody body = response.body();
             MovieApiPagedResponse moviesRetrieved = objectMapper.readValue(body.string(), MovieApiPagedResponse.class);
             pageDTO = new PageDTO(number,
-                    (long) number * DEFAULT_API_PAGE_SIZE > moviesRetrieved.totalElements() ? (int) (moviesRetrieved.totalElements() % DEFAULT_API_PAGE_SIZE) : DEFAULT_API_PAGE_SIZE,
+                    (long) number * DEFAULT_API_PAGE_SIZE > moviesRetrieved.totalElements() ? (int) (moviesRetrieved.totalElements() % DEFAULT_API_PAGE_SIZE) :
+                            DEFAULT_API_PAGE_SIZE,
                     moviesRetrieved.totalPages(),
                     moviesRetrieved.totalElements()
             );
-            if(moviesRetrieved.content() != null) {
+            if (moviesRetrieved.content() != null) {
                 apiMovies = moviesRetrieved.content();
             }
         }
@@ -131,7 +184,7 @@ public class MovieServiceImpl implements MovieService {
             throw new RuntimeException(e);
         }
 
-        if(!apiMovies.isEmpty()) {
+        if (!apiMovies.isEmpty()) {
             List<GenreEntity> allGenres = genreRepository.findAll();
             List<Integer> library = movieRepository.findAllByUser(userUtils.getCurrentUser(authentication))
                     .stream()
@@ -139,11 +192,11 @@ public class MovieServiceImpl implements MovieService {
                     .toList();
             Dictionary<Integer, String> genresDict = new Hashtable<>();
 
-            for(var genre: allGenres){
+            for (var genre : allGenres) {
                 genresDict.put(genre.getGenreId(), genre.getName());
             }
 
-            for(var apiMovie : apiMovies) {
+            for (var apiMovie : apiMovies) {
                 List<String> genres = apiMovie.genres().stream()
                         .map(genresDict::get)
                         .toList();

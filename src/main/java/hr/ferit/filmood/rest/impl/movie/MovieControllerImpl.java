@@ -1,6 +1,7 @@
 package hr.ferit.filmood.rest.impl.movie;
 
 import hr.ferit.filmood.rest.api.movie.MovieController;
+import hr.ferit.filmood.rest.api.movie.dto.MovieDetailedDTO;
 import hr.ferit.filmood.rest.api.movie.request.AddMovieToLibraryRequest;
 import hr.ferit.filmood.rest.api.movie.response.MoviePagedResponse;
 import hr.ferit.filmood.service.MovieService;
@@ -29,5 +30,10 @@ public class MovieControllerImpl implements MovieController {
     @Override
     public void removeFromLibrary(Integer movieId, Authentication authentication) {
         movieService.removeFromLibrary(movieId, authentication);
+    }
+
+    @Override
+    public MovieDetailedDTO getMovie(Integer movieId, Authentication authentication) {
+        return movieService.getMovie(movieId, authentication);
     }
 }

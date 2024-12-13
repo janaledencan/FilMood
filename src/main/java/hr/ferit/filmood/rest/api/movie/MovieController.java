@@ -1,5 +1,6 @@
 package hr.ferit.filmood.rest.api.movie;
 
+import hr.ferit.filmood.rest.api.movie.dto.MovieDetailedDTO;
 import hr.ferit.filmood.rest.api.movie.request.AddMovieToLibraryRequest;
 import hr.ferit.filmood.rest.api.movie.response.MoviePagedResponse;
 import jakarta.validation.Valid;
@@ -33,4 +34,7 @@ public interface MovieController {
 
     @DeleteMapping("/library/{movie-id}")
     void removeFromLibrary(@PathVariable(name = "movie-id") Integer movieId, Authentication authentication);
+
+    @GetMapping("/details/{movie-id}")
+    MovieDetailedDTO getMovie(@PathVariable(name = "movie-id") Integer movieId, Authentication authentication);
 }
