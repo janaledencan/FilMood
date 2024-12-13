@@ -5,10 +5,12 @@ import hr.ferit.filmood.common.rest.PageDTO;
 import hr.ferit.filmood.configuration.properties.FilMoodProperties;
 import hr.ferit.filmood.persistence.entity.GenreEntity;
 import hr.ferit.filmood.persistence.entity.MovieEntity;
+import hr.ferit.filmood.persistence.entity.UserEntity;
 import hr.ferit.filmood.persistence.repository.GenreRepository;
 import hr.ferit.filmood.persistence.repository.MovieRepository;
 import hr.ferit.filmood.rest.api.movie.dto.MovieApiDTO;
 import hr.ferit.filmood.rest.api.movie.dto.MovieDTO;
+import hr.ferit.filmood.rest.api.movie.request.AddMovieToLibraryRequest;
 import hr.ferit.filmood.rest.api.movie.response.MovieApiPagedResponse;
 import hr.ferit.filmood.rest.api.movie.response.MoviePagedResponse;
 import hr.ferit.filmood.service.exception.MovieException;
@@ -36,9 +38,10 @@ import static hr.ferit.filmood.common.CommonConstants.DEFAULT_API_PAGE_SIZE;
 @Transactional
 public class MovieServiceImpl implements MovieService {
 
+    private final static String GET_MOVIE_LIST_URL = "/movie";
+
     private final OkHttpClient okHttpClient;
     private final FilMoodProperties filMoodProperties;
-    private final static String GET_MOVIE_LIST_URL = "/movie";
     private final ObjectMapper objectMapper;
     private final GenreRepository genreRepository;
     private final MovieRepository movieRepository;
@@ -66,6 +69,39 @@ public class MovieServiceImpl implements MovieService {
                 .build();
 
         return callApiAndReturnMoviePagedResponse(request, number, authentication);
+    }
+
+    @Override
+    public void addToLibrary(AddMovieToLibraryRequest addMovieToLibraryRequest, Authentication authentication) {
+
+        UserEntity currentUser = userUtils.getCurrentUser(authentication);
+
+        if(movieRepository.findFirstByUserAndMovieId(currentUser, addMovieToLibraryRequest.movieId()).isPresent()) {
+            throw MovieException.movieAlreadyInLibrary();
+        }
+
+        MovieEntity movie = new MovieEntity();
+        movie.setUser(currentUser);
+        movie.setUserRating(0);
+        movie.setTitle(addMovieToLibraryRequest.title());
+        movie.setMovieId(addMovieToLibraryRequest.movieId());
+        movie.setYear(addMovieToLibraryRequest.releaseYear());
+        movie.setPosterPath(addMovieToLibraryRequest.posterPath());
+        movie.setVoteAverage(addMovieToLibraryRequest.voteAverage());
+        movie.setGenres(String.join(",", addMovieToLibraryRequest.genres()));
+
+        movieRepository.save(movie);
+    }
+
+    @Override
+    public void removeFromLibrary(Integer movieId, Authentication authentication) {
+
+        UserEntity currentUser = userUtils.getCurrentUser(authentication);
+
+        MovieEntity movie = movieRepository.findFirstByUserAndMovieId(currentUser, movieId)
+                .orElseThrow(MovieException::movieNotInLibrary);
+
+        movieRepository.delete(movie);
     }
 
     private MoviePagedResponse callApiAndReturnMoviePagedResponse(Request request, Integer number, Authentication authentication) {

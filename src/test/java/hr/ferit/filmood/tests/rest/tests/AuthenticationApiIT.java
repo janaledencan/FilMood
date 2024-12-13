@@ -119,7 +119,7 @@ public class AuthenticationApiIT extends BaseIT {
                                 NEW_USER_EMAIL,
                                 NEW_USER_AGE,
                                 NEW_USER_GENDER),
-                        loginResponse.getCookie("JSESSIONID")
+                        loginResponse.sessionId()
                 )
                 .then()
                 .statusCode(HttpStatus.OK.value());
@@ -157,7 +157,7 @@ public class AuthenticationApiIT extends BaseIT {
         );
 
         AuthenticationTestClient
-                .update(createUpdateUserRequest, loginResponse.getCookie("JSESSIONID"))
+                .update(createUpdateUserRequest, loginResponse.sessionId())
                 .then()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
 
@@ -176,7 +176,7 @@ public class AuthenticationApiIT extends BaseIT {
         );
 
         UserResponse response = AuthenticationTestClient
-                .getCurrentUser(loginResponse.getCookie("JSESSIONID"))
+                .getCurrentUser(loginResponse.sessionId())
                 .then()
                 .statusCode(HttpStatus.OK.value())
                 .and()

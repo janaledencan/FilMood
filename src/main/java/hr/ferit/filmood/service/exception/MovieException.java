@@ -25,4 +25,12 @@ public class MovieException extends AbstractServiceException {
     public static MovieException apiException(MovieErrorKey errorKey, HttpStatus status, String message) {
         throw new MovieException(errorKey, status, message);
     }
+
+    public static MovieException movieAlreadyInLibrary() {
+        throw new MovieException(MovieErrorKey.ALREADY_IN_LIBRARY, HttpStatus.BAD_REQUEST);
+    }
+
+    public static MovieException movieNotInLibrary() {
+        throw new MovieException(MovieErrorKey.ALREADY_IN_LIBRARY, HttpStatus.BAD_REQUEST);
+    }
 }
