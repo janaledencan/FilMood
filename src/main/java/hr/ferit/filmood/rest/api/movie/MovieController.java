@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import static hr.ferit.filmood.common.CommonConstants.MOOD_REGEX;
 import static hr.ferit.filmood.common.CommonConstants.MOVIE_LIST_REGEX;
 import static hr.ferit.filmood.common.CommonConstants.MOVIE_PATH;
 
@@ -49,4 +50,8 @@ public interface MovieController {
 
     @PostMapping("/library/{movie-id}")
     void rate(@PathVariable(name = "movie-id") Integer movieId, @RequestBody @NotNull @Valid RatingRequest ratingRequest, Authentication authentication);
+
+    @GetMapping("/mood/{mood}")
+    MoviePagedResponse getByMood(@PathVariable(name = "mood") @Pattern(regexp = MOOD_REGEX) String mood,
+                                    @NotNull @Min(1) @Max(500) @RequestParam Integer number, Authentication authentication);
 }

@@ -11,6 +11,8 @@ public class CommonConstants {
 
     public static final String MOVIE_LIST_REGEX = "^(now-playing|popular|top-rated|upcoming)$";
 
+    public static final String MOOD_REGEX = "^(motivated|in-love|sad|brave|curious|excited)$";
+
     public static final String BASE_PATH = "/api/v1";
 
     public static final String AUTH_PATH = BASE_PATH + "/auth";

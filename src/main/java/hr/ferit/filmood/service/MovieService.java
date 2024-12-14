@@ -22,4 +22,7 @@ public interface MovieService {
     PagedResponse<LibraryMovieDTO> getLibrary(Boolean ratedOnly, LibraryPageQuery query, Authentication authentication);
 
     void rate(Integer movieId, RatingRequest ratingRequest, Authentication authentication);
+
+    MoviePagedResponse getByMood(String mood, Integer number, Authentication authentication);
+
 }

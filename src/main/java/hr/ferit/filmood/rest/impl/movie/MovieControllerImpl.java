@@ -50,4 +50,9 @@ public class MovieControllerImpl implements MovieController {
     public void rate(Integer movieId, RatingRequest ratingRequest, Authentication authentication) {
         movieService.rate(movieId, ratingRequest, authentication);
     }
+
+    @Override
+    public MoviePagedResponse getByMood(String mood, Integer number, Authentication authentication) {
+        return movieService.getByMood(mood, number, authentication);
+    }
 }

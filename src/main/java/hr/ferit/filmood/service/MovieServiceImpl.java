@@ -22,6 +22,7 @@ import hr.ferit.filmood.rest.api.movie.response.MovieApiPagedResponse;
 import hr.ferit.filmood.rest.api.movie.response.MoviePagedResponse;
 import hr.ferit.filmood.service.exception.MovieException;
 import hr.ferit.filmood.service.exception.error.MovieErrorKey;
+import hr.ferit.filmood.service.utils.MoodUtils;
 import hr.ferit.filmood.service.utils.UserUtils;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -47,6 +48,7 @@ import static hr.ferit.filmood.common.CommonConstants.DEFAULT_API_PAGE_SIZE;
 public class MovieServiceImpl implements MovieService {
 
     private final static String GET_MOVIE_LIST_URL = "/movie";
+    private final static String DISCOVER_MOVIE_LIST_URL = "/discover/movie";
 
     private final OkHttpClient okHttpClient;
     private final FilMoodProperties filMoodProperties;
@@ -54,16 +56,18 @@ public class MovieServiceImpl implements MovieService {
     private final GenreRepository genreRepository;
     private final MovieRepository movieRepository;
     private final UserUtils userUtils;
+    private final MoodUtils moodUtils;
 
     public MovieServiceImpl(OkHttpClient okHttpClient, FilMoodProperties filMoodProperties, ObjectMapper objectMapper, GenreRepository genreRepository,
                             MovieRepository movieRepository,
-                            UserUtils userUtils) {
+                            UserUtils userUtils, MoodUtils moodUtils) {
         this.okHttpClient = okHttpClient;
         this.filMoodProperties = filMoodProperties;
         this.objectMapper = objectMapper;
         this.genreRepository = genreRepository;
         this.movieRepository = movieRepository;
         this.userUtils = userUtils;
+        this.moodUtils = moodUtils;
     }
 
     @Override
@@ -203,6 +207,19 @@ public class MovieServiceImpl implements MovieService {
         movie.setUserRating(ratingRequest.userRating());
 
         movieRepository.save(movie);
+    }
+
+    @Override
+    public MoviePagedResponse getByMood(String mood, Integer number, Authentication authentication) {
+
+        Request request = new Request.Builder()
+                .url(String.format("%s%s?page=%s&with_genres=%s", API_BASE_URL, DISCOVER_MOVIE_LIST_URL, number, moodUtils.mapToGenres(mood)))
+                .get()
+                .addHeader("accept", "application/json")
+                .addHeader("Authorization", String.format("Bearer %s", filMoodProperties.getApiBearerKey()))
+                .build();
+
+        return callApiAndReturnMoviePagedResponse(request, number, authentication);
     }
 
     private MoviePagedResponse callApiAndReturnMoviePagedResponse(Request request, Integer number, Authentication authentication) {
