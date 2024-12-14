@@ -69,7 +69,7 @@ public class MovieServiceImpl implements MovieService {
     public MoviePagedResponse getMovieList(String movieList, Integer number, Authentication authentication) {
 
         Request request = new Request.Builder()
-                .url(String.format("%s%s/%s?page=%s", API_BASE_URL, GET_MOVIE_LIST_URL, movieList, number))
+                .url(String.format("%s%s/%s?page=%s", API_BASE_URL, GET_MOVIE_LIST_URL, movieList.replace("-", "_"), number))
                 .get()
                 .addHeader("accept", "application/json")
                 .addHeader("Authorization", String.format("Bearer %s", filMoodProperties.getApiBearerKey()))
