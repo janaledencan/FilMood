@@ -42,5 +42,7 @@ public interface MovieController {
     MovieDetailedDTO getMovie(@PathVariable(name = "movie-id") Integer movieId, Authentication authentication);
 
     @GetMapping("/library")
-    PagedResponse<LibraryMovieDTO> getLibrary(@RequestParam(required = false) Boolean all, @RequestBody @NotNull @Valid LibraryPageQuery query, Authentication authentication);
+    PagedResponse<LibraryMovieDTO> getLibrary(@RequestParam(name = "rated-only", required = false) Boolean ratedOnly,
+                                              @RequestBody @NotNull @Valid LibraryPageQuery query,
+                                              Authentication authentication);
 }

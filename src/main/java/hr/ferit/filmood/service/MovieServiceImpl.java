@@ -160,17 +160,18 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    public PagedResponse<LibraryMovieDTO> getLibrary(Boolean all, LibraryPageQuery query, Authentication authentication) {
+    public PagedResponse<LibraryMovieDTO> getLibrary(Boolean ratedOnly, LibraryPageQuery query, Authentication authentication) {
 
         Page<MovieEntity> page;
+        query.setPage(query.getPage() - 1);
 
-        if(all != null && all) {
-            page = movieRepository.findAllByUserAndUserRatingBetween(userUtils.getCurrentUser(authentication), 0, 5, query.toPageRequest());
+        if(ratedOnly != null && ratedOnly) {
+            page = movieRepository.findAllByUserAndUserRatingBetween(userUtils.getCurrentUser(authentication), 1, 5, query.toPageRequest());
         }
         else if(query.getUserRating() != null) {
             page = movieRepository.findAllByUserAndUserRatingBetween(userUtils.getCurrentUser(authentication), query.getUserRating(), query.getUserRating(), query.toPageRequest());
         } else {
-            page = movieRepository.findAllByUserAndUserRatingBetween(userUtils.getCurrentUser(authentication), 1, 5, query.toPageRequest());
+            page = movieRepository.findAllByUserAndUserRatingBetween(userUtils.getCurrentUser(authentication), 0, 5, query.toPageRequest());
         }
 
         List<LibraryMovieDTO> library = new ArrayList<>();

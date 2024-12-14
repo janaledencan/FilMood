@@ -199,7 +199,7 @@ public class MovieApiIT extends BaseIT {
         );
 
         PagedResponse<LibraryMovieDTO> response = MovieTestClient
-                .getLibrary(false,
+                .getLibrary(null,
                         MovieFactory.libraryPageQuery(pageNumber, size, userRating),
                         loginResponse.sessionId())
                 .then()
@@ -234,7 +234,7 @@ public class MovieApiIT extends BaseIT {
         );
 
         PagedResponse<LibraryMovieDTO> response = MovieTestClient
-                .getLibrary(true,
+                .getLibrary(false,
                         MovieFactory.libraryPageQuery(pageNumber, size, userRating),
                         loginResponse.sessionId())
                 .then()
@@ -269,7 +269,7 @@ public class MovieApiIT extends BaseIT {
         );
 
         PagedResponse<LibraryMovieDTO> response = MovieTestClient
-                .getLibrary(null,
+                .getLibrary(true,
                         MovieFactory.libraryPageQuery(pageNumber, size, userRating),
                         loginResponse.sessionId())
                 .then()

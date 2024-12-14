@@ -18,5 +18,5 @@ public interface MovieService {
 
     MovieDetailedDTO getMovie(Integer movieId, Authentication authentication);
 
-    PagedResponse<LibraryMovieDTO> getLibrary(Boolean all, LibraryPageQuery query, Authentication authentication);
+    PagedResponse<LibraryMovieDTO> getLibrary(Boolean ratedOnly, LibraryPageQuery query, Authentication authentication);
 }

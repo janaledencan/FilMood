@@ -41,7 +41,7 @@ public class MovieControllerImpl implements MovieController {
     }
 
     @Override
-    public PagedResponse<LibraryMovieDTO> getLibrary(Boolean all, LibraryPageQuery query, Authentication authentication) {
-        return movieService.getLibrary(all, query, authentication);
+    public PagedResponse<LibraryMovieDTO> getLibrary(Boolean ratedOnly, LibraryPageQuery query, Authentication authentication) {
+        return movieService.getLibrary(ratedOnly, query, authentication);
     }
 }

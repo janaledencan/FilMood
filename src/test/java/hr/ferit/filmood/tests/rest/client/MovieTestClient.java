@@ -26,13 +26,13 @@ public class MovieTestClient {
                 .delete(String.format("%s/library/%s", MOVIE_PATH, movieId));
     }
 
-    public static Response getLibrary(Boolean all, LibraryPageQuery query, String sessionId) {
+    public static Response getLibrary(Boolean ratedOnly, LibraryPageQuery query, String sessionId) {
 
         return RestAssured
                 .given()
                 .body(query)
                 .cookie("JSESSIONID", sessionId)
-                .param("all", all)
+                .param("rated-only", ratedOnly)
                 .get(String.format("%s/library", MOVIE_PATH));
     }
 }

@@ -76,7 +76,7 @@ public class MovieParameters {
 
         for (int page = 0; page < requiredNumberOfPages; page++) {
             arguments.add(
-                    Arguments.of(String.format("Page %d request", page), page,
+                    Arguments.of(String.format("Page %d request", page + 1), page + 1,
                             VALID_PAGE_SIZE, MOVIE_VALID_QUERY_USER_RATING_NULL, movieIds.get(page))
             );
         }
@@ -92,8 +92,8 @@ public class MovieParameters {
 
         for (int page = 0; page < requiredNumberOfPages; page++) {
             arguments.add(
-                    Arguments.of(String.format("Page %d request", page),
-                            page, VALID_PAGE_SIZE, MOVIE_VALID_QUERY_USER_RATING, movieIds.get(page))
+                    Arguments.of(String.format("Page %d request", page + 1),
+                            page + 1, VALID_PAGE_SIZE, MOVIE_VALID_QUERY_USER_RATING, movieIds.get(page))
             );
         }
         return arguments.stream();
@@ -108,8 +108,8 @@ public class MovieParameters {
 
         for (int page = 0; page < requiredNumberOfPages; page++) {
             arguments.add(
-                    Arguments.of(String.format("Page %d request", page),
-                            page, VALID_PAGE_SIZE, MOVIE_VALID_QUERY_USER_RATING_NULL, movieIds.get(page))
+                    Arguments.of(String.format("Page %d request", page + 1),
+                            page + 1, VALID_PAGE_SIZE, MOVIE_VALID_QUERY_USER_RATING_NULL, movieIds.get(page))
             );
         }
         return arguments.stream();
