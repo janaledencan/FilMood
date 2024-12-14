@@ -6,6 +6,7 @@ import hr.ferit.filmood.persistence.entity.MovieEntity;
 import hr.ferit.filmood.persistence.repository.MovieRepository;
 import hr.ferit.filmood.rest.api.movie.dto.LibraryMovieDTO;
 import hr.ferit.filmood.rest.api.movie.request.AddMovieToLibraryRequest;
+import hr.ferit.filmood.rest.api.movie.request.RatingRequest;
 import hr.ferit.filmood.rest.api.movie.response.LibraryPagedResponse;
 import hr.ferit.filmood.tests.BaseIT;
 import hr.ferit.filmood.tests.rest.client.AuthenticationTestClient;
@@ -41,6 +42,7 @@ import static hr.ferit.filmood.tests.rest.constant.MovieConstants.NEW_MOVIE_TITL
 import static hr.ferit.filmood.tests.rest.constant.MovieConstants.NEW_MOVIE_VOTE_AVERAGE;
 import static hr.ferit.filmood.tests.rest.constant.MovieConstants.NEW_MOVIE_YEAR;
 import static hr.ferit.filmood.tests.rest.constant.MovieConstants.RATED_MOVIES_IN_LIBRARY_COUNT;
+import static hr.ferit.filmood.tests.rest.constant.MovieConstants.VALID_RATING;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
@@ -95,7 +97,7 @@ public class MovieApiIT extends BaseIT {
     @Test
     @DisplayName("Add movie to library (movie already in library) - 400 Bad request")
     @FlywayTest(locationsForMigrate = {"migrations/users", "migrations/movies"})
-    public void givenValidRequest_whenAddMovieToLibrary_alreadyInLibrary_failure400() {
+    public void givenInvalidRequest_whenAddMovieToLibrary_alreadyInLibrary_failure400() {
 
         Response loginResponse = AuthenticationTestClient.authenticate(
                 AuthenticationFactory.authRequest(
@@ -169,7 +171,7 @@ public class MovieApiIT extends BaseIT {
     @Test
     @DisplayName("Remove movie from library (movie is not in library) - 400 Bad request")
     @FlywayTest(locationsForMigrate = {"migrations/users"})
-    public void givenValidRequest_whenRemoveMovieFromLibrary_failure400() {
+    public void givenInvalidRequest_whenRemoveMovieFromLibrary_failure400() {
 
         Response loginResponse = AuthenticationTestClient.authenticate(
                 AuthenticationFactory.authRequest(
@@ -187,7 +189,7 @@ public class MovieApiIT extends BaseIT {
 
     @ParameterizedTest(name = "{0}")
     @MethodSource("hr.ferit.filmood.tests.rest.parameters.MovieParameters#libraryPageRequestWithUserRating")
-    @DisplayName("Get library with user rating specified - 200 Ok")
+    @DisplayName("Get library with user userRating specified - 200 Ok")
     @FlywayTest(locationsForMigrate = {"migrations/users", "migrations/movies"})
     public void givenValidRequest_whenGetLibraryWithUserRatingSpecified_success200(String name, Integer pageNumber, Integer size,
                                                                                    Integer userRating, Integer movieIdToCheck) {
@@ -286,6 +288,57 @@ public class MovieApiIT extends BaseIT {
         assertThat(pageDTO.getTotalElements(), equalTo(RATED_MOVIES_IN_LIBRARY_COUNT));
         assertThat(pageDTO.getSize(), equalTo(size));
         assertThat(pageDTO.getNumber(), equalTo(pageNumber));
+
+        AuthenticationTestClient.logout();
+    }
+
+    @Test
+    @DisplayName("Rate movie - 200 Ok")
+    @FlywayTest(locationsForMigrate = {"migrations/users", "migrations/movies"})
+    public void givenValidRequest_whenRateMovie_success200() {
+
+        Response loginResponse = AuthenticationTestClient.authenticate(
+                AuthenticationFactory.authRequest(
+                        EXISTING_USER_USERNAME,
+                        EXISTING_USER_PASSWORD)
+        );
+
+        MovieTestClient
+                .rate(EXISTING_MOVIE_ID, new RatingRequest(VALID_RATING), loginResponse.sessionId())
+                .then()
+                .statusCode(HttpStatus.OK.value());
+
+        Optional<MovieEntity> movieOpt = movieRepository
+                .findFirstByUserUsernameAndMovieId(EXISTING_USER_USERNAME, EXISTING_MOVIE_ID);
+
+        if(movieOpt.isPresent()) {
+            MovieEntity movie = movieOpt.get();
+            Assertions.assertEquals(movie.getUserRating(), VALID_RATING);
+        } else {
+            Assertions.fail();
+        }
+
+        AuthenticationTestClient.logout();
+    }
+
+    @ParameterizedTest(name = "{2}")
+    @MethodSource("hr.ferit.filmood.tests.rest.parameters.MovieParameters#badRequestRateMovie")
+    @DisplayName("Rate movie - 400 Bad request")
+    @FlywayTest(locationsForMigrate = {"migrations/users", "migrations/movies"})
+    public void givenInvalidRequest_whenRateMovie_failure400(RatingRequest ratingRequest,
+                                                             Integer movieId,
+                                                             String name) {
+
+        Response loginResponse = AuthenticationTestClient.authenticate(
+                AuthenticationFactory.authRequest(
+                        EXISTING_USER_USERNAME,
+                        EXISTING_USER_PASSWORD)
+        );
+
+        MovieTestClient
+                .rate(movieId, ratingRequest, loginResponse.sessionId())
+                .then()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
 
         AuthenticationTestClient.logout();
     }

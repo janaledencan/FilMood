@@ -9,11 +9,11 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static hr.ferit.filmood.tests.rest.constant.MovieConstants.BLANK_STRING;
+import static hr.ferit.filmood.tests.rest.constant.MovieConstants.EXISTING_MOVIE_ID;
+import static hr.ferit.filmood.tests.rest.constant.MovieConstants.INVALID_RATING;
 import static hr.ferit.filmood.tests.rest.constant.MovieConstants.MOVIES_IN_LIBRARY_COUNT;
 import static hr.ferit.filmood.tests.rest.constant.MovieConstants.MOVIES_IN_LIBRARY_COUNT_BY_RATING;
 import static hr.ferit.filmood.tests.rest.constant.MovieConstants.MOVIES_TO_CHECK;
-import static hr.ferit.filmood.tests.rest.constant.MovieConstants.RATED_MOVIES_IN_LIBRARY_COUNT;
-import static hr.ferit.filmood.tests.rest.constant.MovieConstants.RATED_MOVIES_TO_CHECK;
 import static hr.ferit.filmood.tests.rest.constant.MovieConstants.MOVIES_TO_CHECK_WITH_USER_RATING_SPECIFIED;
 import static hr.ferit.filmood.tests.rest.constant.MovieConstants.MOVIE_VALID_QUERY_USER_RATING;
 import static hr.ferit.filmood.tests.rest.constant.MovieConstants.MOVIE_VALID_QUERY_USER_RATING_NULL;
@@ -23,9 +23,13 @@ import static hr.ferit.filmood.tests.rest.constant.MovieConstants.NEW_MOVIE_POST
 import static hr.ferit.filmood.tests.rest.constant.MovieConstants.NEW_MOVIE_TITLE;
 import static hr.ferit.filmood.tests.rest.constant.MovieConstants.NEW_MOVIE_VOTE_AVERAGE;
 import static hr.ferit.filmood.tests.rest.constant.MovieConstants.NEW_MOVIE_YEAR;
+import static hr.ferit.filmood.tests.rest.constant.MovieConstants.NON_EXISTING_MOVIE_ID;
 import static hr.ferit.filmood.tests.rest.constant.MovieConstants.NULL_FLOAT;
 import static hr.ferit.filmood.tests.rest.constant.MovieConstants.NULL_INTEGER;
+import static hr.ferit.filmood.tests.rest.constant.MovieConstants.RATED_MOVIES_IN_LIBRARY_COUNT;
+import static hr.ferit.filmood.tests.rest.constant.MovieConstants.RATED_MOVIES_TO_CHECK;
 import static hr.ferit.filmood.tests.rest.constant.MovieConstants.VALID_PAGE_SIZE;
+import static hr.ferit.filmood.tests.rest.constant.MovieConstants.VALID_RATING;
 
 public class MovieParameters {
 
@@ -64,6 +68,21 @@ public class MovieParameters {
                                 NULL_FLOAT,
                                 NEW_MOVIE_POSTER_PATH),
                         "Null vote average")
+        );
+    }
+
+    public static Stream<Arguments> badRequestRateMovie() {
+
+        return Stream.of(
+                Arguments.of(MovieFactory.ratingRequest(NULL_INTEGER),
+                        EXISTING_MOVIE_ID,
+                        "Null rating"),
+                Arguments.of(MovieFactory.ratingRequest(INVALID_RATING),
+                        EXISTING_MOVIE_ID,
+                        "Invalid rating"),
+                Arguments.of(MovieFactory.ratingRequest(VALID_RATING),
+                        NON_EXISTING_MOVIE_ID,
+                        "Non existing movie id")
         );
     }
 

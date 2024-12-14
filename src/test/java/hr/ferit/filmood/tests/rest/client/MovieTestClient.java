@@ -2,6 +2,7 @@ package hr.ferit.filmood.tests.rest.client;
 
 import hr.ferit.filmood.common.rest.movie.LibraryPageQuery;
 import hr.ferit.filmood.rest.api.movie.request.AddMovieToLibraryRequest;
+import hr.ferit.filmood.rest.api.movie.request.RatingRequest;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 
@@ -34,5 +35,14 @@ public class MovieTestClient {
                 .cookie("JSESSIONID", sessionId)
                 .param("rated-only", ratedOnly)
                 .get(String.format("%s/library", MOVIE_PATH));
+    }
+
+    public static Response rate(Integer movieId, RatingRequest ratingRequest, String sessionId) {
+
+        return RestAssured
+                .given()
+                .body(ratingRequest)
+                .cookie("JSESSIONID", sessionId)
+                .post(String.format("%s/library/%s", MOVIE_PATH, movieId));
     }
 }

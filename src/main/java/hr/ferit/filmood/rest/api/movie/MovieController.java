@@ -5,6 +5,7 @@ import hr.ferit.filmood.common.rest.movie.LibraryPageQuery;
 import hr.ferit.filmood.rest.api.movie.dto.LibraryMovieDTO;
 import hr.ferit.filmood.rest.api.movie.dto.MovieDetailedDTO;
 import hr.ferit.filmood.rest.api.movie.request.AddMovieToLibraryRequest;
+import hr.ferit.filmood.rest.api.movie.request.RatingRequest;
 import hr.ferit.filmood.rest.api.movie.response.MoviePagedResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
@@ -45,4 +46,7 @@ public interface MovieController {
     PagedResponse<LibraryMovieDTO> getLibrary(@RequestParam(name = "rated-only", required = false) Boolean ratedOnly,
                                               @RequestBody @NotNull @Valid LibraryPageQuery query,
                                               Authentication authentication);
+
+    @PostMapping("/library/{movie-id}")
+    void rate(@PathVariable(name = "movie-id") Integer movieId, @RequestBody @NotNull @Valid RatingRequest ratingRequest, Authentication authentication);
 }

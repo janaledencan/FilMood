@@ -6,6 +6,7 @@ import hr.ferit.filmood.rest.api.movie.MovieController;
 import hr.ferit.filmood.rest.api.movie.dto.LibraryMovieDTO;
 import hr.ferit.filmood.rest.api.movie.dto.MovieDetailedDTO;
 import hr.ferit.filmood.rest.api.movie.request.AddMovieToLibraryRequest;
+import hr.ferit.filmood.rest.api.movie.request.RatingRequest;
 import hr.ferit.filmood.rest.api.movie.response.MoviePagedResponse;
 import hr.ferit.filmood.service.MovieService;
 import org.springframework.security.core.Authentication;
@@ -43,5 +44,10 @@ public class MovieControllerImpl implements MovieController {
     @Override
     public PagedResponse<LibraryMovieDTO> getLibrary(Boolean ratedOnly, LibraryPageQuery query, Authentication authentication) {
         return movieService.getLibrary(ratedOnly, query, authentication);
+    }
+
+    @Override
+    public void rate(Integer movieId, RatingRequest ratingRequest, Authentication authentication) {
+        movieService.rate(movieId, ratingRequest, authentication);
     }
 }

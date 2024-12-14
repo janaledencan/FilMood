@@ -17,6 +17,7 @@ import hr.ferit.filmood.rest.api.movie.dto.MovieApiDetailedDTO;
 import hr.ferit.filmood.rest.api.movie.dto.MovieDTO;
 import hr.ferit.filmood.rest.api.movie.dto.MovieDetailedDTO;
 import hr.ferit.filmood.rest.api.movie.request.AddMovieToLibraryRequest;
+import hr.ferit.filmood.rest.api.movie.request.RatingRequest;
 import hr.ferit.filmood.rest.api.movie.response.MovieApiPagedResponse;
 import hr.ferit.filmood.rest.api.movie.response.MoviePagedResponse;
 import hr.ferit.filmood.service.exception.MovieException;
@@ -189,6 +190,19 @@ public class MovieServiceImpl implements MovieService {
         }
 
         return new PagedResponse<>(PageDTO.from(page), library);
+    }
+
+    @Override
+    public void rate(Integer movieId, RatingRequest ratingRequest, Authentication authentication) {
+
+        UserEntity currentUser = userUtils.getCurrentUser(authentication);
+
+        MovieEntity movie = movieRepository.findFirstByUserAndMovieId(currentUser, movieId)
+                .orElseThrow(MovieException::movieNotInLibrary);
+
+        movie.setUserRating(ratingRequest.userRating());
+
+        movieRepository.save(movie);
     }
 
     private MoviePagedResponse callApiAndReturnMoviePagedResponse(Request request, Integer number, Authentication authentication) {

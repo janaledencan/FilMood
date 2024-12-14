@@ -34,6 +34,12 @@ public class MovieConstants {
 
     public static final String BLANK_STRING = " ";
 
+    public static final Integer VALID_RATING = 4;
+
+    public static final Integer INVALID_RATING = -1;
+
+    public static final Integer NON_EXISTING_MOVIE_ID = 10;
+
 
     // constants for page request
     public static final Integer VALID_PAGE_SIZE = 2;
