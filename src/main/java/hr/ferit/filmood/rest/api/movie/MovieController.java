@@ -1,5 +1,8 @@
 package hr.ferit.filmood.rest.api.movie;
 
+import hr.ferit.filmood.common.rest.PagedResponse;
+import hr.ferit.filmood.common.rest.movie.LibraryPageQuery;
+import hr.ferit.filmood.rest.api.movie.dto.LibraryMovieDTO;
 import hr.ferit.filmood.rest.api.movie.dto.MovieDetailedDTO;
 import hr.ferit.filmood.rest.api.movie.request.AddMovieToLibraryRequest;
 import hr.ferit.filmood.rest.api.movie.response.MoviePagedResponse;
@@ -37,4 +40,7 @@ public interface MovieController {
 
     @GetMapping("/details/{movie-id}")
     MovieDetailedDTO getMovie(@PathVariable(name = "movie-id") Integer movieId, Authentication authentication);
+
+    @GetMapping("/library")
+    PagedResponse<LibraryMovieDTO> getLibrary(@RequestParam(required = false) Boolean all, @RequestBody @NotNull @Valid LibraryPageQuery query, Authentication authentication);
 }

@@ -2,6 +2,8 @@ package hr.ferit.filmood.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hr.ferit.filmood.common.rest.PageDTO;
+import hr.ferit.filmood.common.rest.PagedResponse;
+import hr.ferit.filmood.common.rest.movie.LibraryPageQuery;
 import hr.ferit.filmood.configuration.properties.FilMoodProperties;
 import hr.ferit.filmood.persistence.entity.GenreEntity;
 import hr.ferit.filmood.persistence.entity.MovieEntity;
@@ -9,6 +11,7 @@ import hr.ferit.filmood.persistence.entity.UserEntity;
 import hr.ferit.filmood.persistence.repository.GenreRepository;
 import hr.ferit.filmood.persistence.repository.MovieRepository;
 import hr.ferit.filmood.rest.api.genre.dto.GenreDTO;
+import hr.ferit.filmood.rest.api.movie.dto.LibraryMovieDTO;
 import hr.ferit.filmood.rest.api.movie.dto.MovieApiDTO;
 import hr.ferit.filmood.rest.api.movie.dto.MovieApiDetailedDTO;
 import hr.ferit.filmood.rest.api.movie.dto.MovieDTO;
@@ -22,7 +25,7 @@ import hr.ferit.filmood.service.utils.UserUtils;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import okhttp3.ResponseBody;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -30,6 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
@@ -121,12 +125,11 @@ public class MovieServiceImpl implements MovieService {
 
         try (Response response = okHttpClient.newCall(request).execute()) {
 
-            if (!response.isSuccessful()) {
+            if (!response.isSuccessful() || response.body() == null) {
                 throw MovieException.apiException(MovieErrorKey.API_ERROR, HttpStatus.valueOf(response.code()), response.message());
             }
 
-            ResponseBody body = response.body();
-            movieRetrieved = objectMapper.readValue(body.string(), MovieApiDetailedDTO.class);
+            movieRetrieved = objectMapper.readValue(response.body().string(), MovieApiDetailedDTO.class);
         }
         catch (IOException e) {
             throw new RuntimeException(e);
@@ -156,6 +159,37 @@ public class MovieServiceImpl implements MovieService {
         );
     }
 
+    @Override
+    public PagedResponse<LibraryMovieDTO> getLibrary(Boolean all, LibraryPageQuery query, Authentication authentication) {
+
+        Page<MovieEntity> page;
+
+        if(all != null && all) {
+            page = movieRepository.findAllByUserAndUserRatingBetween(userUtils.getCurrentUser(authentication), 0, 5, query.toPageRequest());
+        }
+        else if(query.getUserRating() != null) {
+            page = movieRepository.findAllByUserAndUserRatingBetween(userUtils.getCurrentUser(authentication), query.getUserRating(), query.getUserRating(), query.toPageRequest());
+        } else {
+            page = movieRepository.findAllByUserAndUserRatingBetween(userUtils.getCurrentUser(authentication), 1, 5, query.toPageRequest());
+        }
+
+        List<LibraryMovieDTO> library = new ArrayList<>();
+
+        for(var movie : page.getContent()) {
+            library.add(new LibraryMovieDTO(
+                    movie.getTitle(),
+                    Arrays.asList(movie.getGenres().split(",")),
+                    movie.getMovieId(),
+                    movie.getYear(),
+                    movie.getVoteAverage(),
+                    movie.getPosterPath(),
+                    movie.getUserRating()
+            ));
+        }
+
+        return new PagedResponse<>(PageDTO.from(page), library);
+    }
+
     private MoviePagedResponse callApiAndReturnMoviePagedResponse(Request request, Integer number, Authentication authentication) {
 
         List<MovieApiDTO> apiMovies = new ArrayList<>();
@@ -164,12 +198,11 @@ public class MovieServiceImpl implements MovieService {
 
         try (Response response = okHttpClient.newCall(request).execute()) {
 
-            if (!response.isSuccessful()) {
+            if (!response.isSuccessful() || response.body() == null) {
                 throw MovieException.apiException(MovieErrorKey.API_ERROR, HttpStatus.valueOf(response.code()), response.message());
             }
 
-            ResponseBody body = response.body();
-            MovieApiPagedResponse moviesRetrieved = objectMapper.readValue(body.string(), MovieApiPagedResponse.class);
+            MovieApiPagedResponse moviesRetrieved = objectMapper.readValue(response.body().string(), MovieApiPagedResponse.class);
             pageDTO = new PageDTO(number,
                     (long) number * DEFAULT_API_PAGE_SIZE > moviesRetrieved.totalElements() ? (int) (moviesRetrieved.totalElements() % DEFAULT_API_PAGE_SIZE) :
                             DEFAULT_API_PAGE_SIZE,

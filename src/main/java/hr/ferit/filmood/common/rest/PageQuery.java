@@ -66,7 +66,10 @@ public abstract class PageQuery {
                 Sort.by(
                         Sort.Direction.valueOf(getDirection()),
                         getSort()
-                )
+                ).and(Sort.by(
+                        Sort.Direction.DESC,
+                        SORT
+                ))
         );
     }
 }
