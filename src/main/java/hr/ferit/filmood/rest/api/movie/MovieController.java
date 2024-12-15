@@ -118,11 +118,6 @@ public interface MovieController {
                             description = "Movie details fetched successfully."
                     ),
                     @ApiResponse(
-                            responseCode = "400",
-                            description = "Bad request.",
-                            content = {@Content(schema = @Schema(implementation = ErrorResponse.class))}
-                    ),
-                    @ApiResponse(
                             responseCode = "403",
                             description = "Forbidden.",
                             content = {@Content(schema = @Schema(implementation = ErrorResponse.class))}
@@ -135,7 +130,8 @@ public interface MovieController {
             }
     )
     @GetMapping("/details/{movie-id}")
-    MovieDetailedDTO getMovie(@PathVariable(name = "movie-id") Integer movieId, Authentication authentication);
+    MovieDetailedDTO getMovie(@Parameter(description = "Movie id of movie to fetch, if movie with given movieId doesn't exist, 404 is returned", example = "104")
+                              @PathVariable(name = "movie-id") Integer movieId, Authentication authentication);
 
     @Operation(
             summary = "Fetches all movies inside User's library.",
@@ -195,7 +191,8 @@ public interface MovieController {
             }
     )
     @PostMapping("/library/{movie-id}")
-    void rate(@PathVariable(name = "movie-id") Integer movieId, @RequestBody @NotNull @Valid RatingRequest ratingRequest, Authentication authentication);
+    void rate(@Parameter(description = "Movie id of movie in library to rate, if movie with given movieId is not in library, 400 is returned", example = "104")
+              @PathVariable(name = "movie-id") Integer movieId, @RequestBody @NotNull @Valid RatingRequest ratingRequest, Authentication authentication);
 
     @Operation(
             summary = "Fetches movies recommended for specified mood.",
