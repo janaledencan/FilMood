@@ -31,7 +31,7 @@ public class AuthenticationTestClient {
                 .given()
                 .cookie("JSESSIONID", sessionId)
                 .body(request)
-                .post(String.format("%s/update", AUTH_PATH));
+                .put(String.format("%s/update", AUTH_PATH));
     }
 
     public static Response getCurrentUser(String sessionId) {
