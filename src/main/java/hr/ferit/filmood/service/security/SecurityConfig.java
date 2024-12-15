@@ -35,6 +35,8 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(configurer -> configurer
                 .requestMatchers("/error",
+                        "/swagger-ui/**",
+                        "/v3/api-docs*/**",
                         AUTH_PATH + "/login/**",
                         AUTH_PATH + "/signup/**",
                         AUTH_PATH + "/logout/**",

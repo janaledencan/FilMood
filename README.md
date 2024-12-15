@@ -31,6 +31,6 @@ Backend for FilMood app
     - mvn clean install -DskipTests 
     - mvn clean verify
 12. On top left of the IDE select Project icon, select filmood-backend, go to src/main/java, right click on FilmoodApplication and select Run. IntelliJ should also create Run shortcut which you can use for repetitive running (Green play icon). To stop the app, click on any red square you see.
-13. When app is running, you can check available endpoints in browser using Swagger UI by typing <a href="http://localhost:8080/swagger-ui">localhost:8080/swagger-ui</a>
+13. When app is running, you can check available endpoints in browser using Swagger UI by typing <a href="http://localhost:8080/swagger-ui/index.html">localhost:8080/swagger-ui/index.html</a>
 
 
