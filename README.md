@@ -7,7 +7,7 @@ Backend for FilMood app
 
 1. <a href="https://www.jetbrains.com/lp/general-leaflets/students/">Install IntelliJ (student license)</a>
 2. <a href="https://docs.docker.com/engine/install/">Install Docker engine (Linux only)</a>
-3. <a href="https://docs.docker.com/desktop/setup/install/windows-install/">Install Docker desktop</a>
+3. <a href="https://docs.docker.com/desktop/setup/install/windows-install/">Install Docker desktop (Windows only)</a>
 4. <a href="https://www.jetbrains.com/help/idea/sdk.html#jdk-from-ide">Install Java 17 Amazon Corretto 17.0.10 inside IntelliJ</a>
 5. I suggest PC restart after completing steps above
 
