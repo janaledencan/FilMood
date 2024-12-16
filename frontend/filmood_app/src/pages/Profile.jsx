@@ -18,23 +18,7 @@ function Profile() {
         age: 28,
     });
 
-    // Wishlist data
-    const [wishlist, setWishlist] = useState([
-        {
-            id: 1,
-            name: "Inception",
-            image: "https://via.placeholder.com/150",
-            year: 2010,
-            genre: "Sci-Fi",
-        },
-        {
-            id: 2,
-            name: "The Dark Knight",
-            image: "https://via.placeholder.com/150",
-            year: 2008,
-            genre: "Action",
-        },
-    ]);
+
 
     // Modal visibility state
     const [showModal, setShowModal] = useState(false);

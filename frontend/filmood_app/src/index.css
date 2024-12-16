@@ -76,3 +76,9 @@ code {
   color: var(--secondary-color);
   font-weight: bold;
 }
+
+.btn-notRaited {
+  background-color: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
+  color: whitesmoke;
+}

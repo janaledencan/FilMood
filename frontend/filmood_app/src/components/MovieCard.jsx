@@ -17,7 +17,7 @@ function MovieCard({ movie }) {
                         <strong>Rating:</strong> {movie.rating}/10 <br />
                         <strong>Genre:</strong> {movie.genre}
                     </Card.Text>
-                    <Button className="btn-primary me-2">Add to Wishlist</Button>
+                    <Button className="btn-primary me-2">Add to Library</Button>
                     <Link to={`/details`} state={{ movie }}>
                         <Button className="btn-tertiary" variant="secondary">View Details</Button>
                     </Link>
