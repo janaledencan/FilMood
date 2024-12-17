@@ -1,0 +1,12 @@
+db-schema: filmood
+
+server:
+  error:
+    include-binding-errors: always
+  servlet:
+    session:
+      cookie:
+        http-only: true
+
+filmood:
+  api-bearer-key: eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIzZjJhZTU3ZjU0NWFlNDczMTUwYWNlZGQxMGFlNGQ2MSIsIm5iZiI6MTczMzU2OTk2Mi4wMzgsInN1YiI6IjY3NTQyZGFhYjQ2NzU2MGNkNzA1NGMyYSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.ByaC_IlPhk48T8DqBB48_b7-Arg99n_YHgEYQCenkts
