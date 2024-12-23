@@ -5,6 +5,7 @@ import hr.ferit.filmood.rest.api.movie.request.AddMovieToLibraryRequest;
 import hr.ferit.filmood.rest.api.movie.request.RatingRequest;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
 
 import static hr.ferit.filmood.common.CommonConstants.MOVIE_PATH;
 
@@ -29,12 +30,33 @@ public class MovieTestClient {
 
     public static Response getLibrary(Boolean ratedOnly, LibraryPageQuery query, String sessionId) {
 
-        return RestAssured
+        RequestSpecification specification = RestAssured
                 .given()
                 .body(query)
                 .cookie("JSESSIONID", sessionId)
-                .param("rated-only", ratedOnly)
-                .get(String.format("%s/library", MOVIE_PATH));
+                .param("rated-only", ratedOnly);
+
+        if (query.getPage() != null) {
+            specification.param("page", query.getPage());
+        }
+
+        if (query.getSize() != null) {
+            specification.param("size", query.getSize());
+        }
+
+        if (query.getSort() != null) {
+            specification.param("sort", query.getSort());
+        }
+
+        if (query.getDirection() != null) {
+            specification.param("direction", query.getDirection());
+        }
+
+        if (query.getUserRating() != null) {
+            specification.param("user-rating", query.getUserRating());
+        }
+
+        return specification.get(String.format("%s/library", MOVIE_PATH));
     }
 
     public static Response rate(Integer movieId, RatingRequest ratingRequest, String sessionId) {

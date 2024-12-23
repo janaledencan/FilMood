@@ -1,7 +1,6 @@
 package hr.ferit.filmood.service;
 
 import hr.ferit.filmood.common.rest.PagedResponse;
-import hr.ferit.filmood.common.rest.movie.LibraryPageQuery;
 import hr.ferit.filmood.rest.api.movie.dto.LibraryMovieDTO;
 import hr.ferit.filmood.rest.api.movie.dto.MovieDetailedDTO;
 import hr.ferit.filmood.rest.api.movie.request.AddMovieToLibraryRequest;
@@ -19,10 +18,9 @@ public interface MovieService {
 
     MovieDetailedDTO getMovie(Integer movieId, Authentication authentication);
 
-    PagedResponse<LibraryMovieDTO> getLibrary(Boolean ratedOnly, LibraryPageQuery query, Authentication authentication);
+    PagedResponse<LibraryMovieDTO> getLibrary(Boolean ratedOnly, Integer page, Integer size, String sort, String direction, Integer userRating, Authentication authentication);
 
     void rate(Integer movieId, RatingRequest ratingRequest, Authentication authentication);
 
     MoviePagedResponse getByMood(String mood, Integer number, Authentication authentication);
-
 }

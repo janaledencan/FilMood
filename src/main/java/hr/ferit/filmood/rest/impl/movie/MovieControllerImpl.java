@@ -1,7 +1,6 @@
 package hr.ferit.filmood.rest.impl.movie;
 
 import hr.ferit.filmood.common.rest.PagedResponse;
-import hr.ferit.filmood.common.rest.movie.LibraryPageQuery;
 import hr.ferit.filmood.rest.api.movie.MovieController;
 import hr.ferit.filmood.rest.api.movie.dto.LibraryMovieDTO;
 import hr.ferit.filmood.rest.api.movie.dto.MovieDetailedDTO;
@@ -42,8 +41,8 @@ public class MovieControllerImpl implements MovieController {
     }
 
     @Override
-    public PagedResponse<LibraryMovieDTO> getLibrary(Boolean ratedOnly, LibraryPageQuery query, Authentication authentication) {
-        return movieService.getLibrary(ratedOnly, query, authentication);
+    public PagedResponse<LibraryMovieDTO> getLibrary(Boolean ratedOnly, Integer page, Integer size, String sort, String direction, Integer userRating, Authentication authentication) {
+        return movieService.getLibrary(ratedOnly, page, size, sort, direction, userRating, authentication);
     }
 
     @Override
