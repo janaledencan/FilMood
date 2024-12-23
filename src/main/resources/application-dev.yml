@@ -6,8 +6,8 @@ server:
   servlet:
     session:
       cookie:
-        http-only: true
-        same-site: none
+        http-only: false
+        same-site: lax
         secure: false
 
 filmood:
