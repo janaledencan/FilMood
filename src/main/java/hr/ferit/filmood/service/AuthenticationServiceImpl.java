@@ -77,8 +77,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             throw UserException.emailAlreadyExists();
         }
 
-        if(createUpdateUserRequest.password().isBlank()) {
-            throw UserException.blankPassword();
+        if(createUpdateUserRequest.password() == null || createUpdateUserRequest.password().isBlank()) {
+            throw UserException.blankOrNullPassword();
         }
 
         UserEntity user = new UserEntity(createUpdateUserRequest.firstName(),
@@ -113,7 +113,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
 
         currentUser.setUsername(newUsername);
-        if(!createUpdateUserRequest.password().isBlank()) {
+        if(createUpdateUserRequest.password() != null && !createUpdateUserRequest.password().isBlank()) {
             currentUser.setPassword(bCryptPasswordEncoder.encode(createUpdateUserRequest.password()));
         }
         currentUser.setAge(createUpdateUserRequest.age());

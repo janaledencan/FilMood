@@ -23,6 +23,7 @@ import static hr.ferit.filmood.tests.rest.constant.AuthenticationConstants.NEW_U
 import static hr.ferit.filmood.tests.rest.constant.AuthenticationConstants.NEW_USER_PASSWORD;
 import static hr.ferit.filmood.tests.rest.constant.AuthenticationConstants.NEW_USER_USERNAME;
 import static hr.ferit.filmood.tests.rest.constant.AuthenticationConstants.NULL_AGE;
+import static hr.ferit.filmood.tests.rest.constant.AuthenticationConstants.NULL_STRING;
 
 public class UserParameters {
 
@@ -65,6 +66,15 @@ public class UserParameters {
                         NEW_USER_AGE,
                         NEW_USER_GENDER
                 ), "Blank password"),
+                Arguments.of(AuthenticationFactory.createUpdateUserRequest(
+                        NEW_USER_USERNAME,
+                        NULL_STRING,
+                        NEW_USER_FIRST_NAME,
+                        NEW_USER_LAST_NAME,
+                        NEW_USER_EMAIL,
+                        NEW_USER_AGE,
+                        NEW_USER_GENDER
+                ), "Null password"),
                 Arguments.of(AuthenticationFactory.createUpdateUserRequest(
                         NEW_USER_USERNAME,
                         NEW_USER_PASSWORD,

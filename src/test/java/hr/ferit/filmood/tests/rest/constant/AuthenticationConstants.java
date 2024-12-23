@@ -40,5 +40,7 @@ public class AuthenticationConstants {
 
     public static final String BLANK_STRING = " ";
 
+    public static final String NULL_STRING = null;
+
     public static final Integer NULL_AGE = null;
 }

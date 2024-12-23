@@ -35,7 +35,7 @@ public class UserException extends AbstractServiceException {
         throw new UserException(UserErrorKey.USERNAME_ALREADY_EXISTS, HttpStatus.BAD_REQUEST);
     }
 
-    public static UserException blankPassword() {
+    public static UserException blankOrNullPassword() {
         throw new UserException(UserErrorKey.BLANK_PASSWORD, HttpStatus.BAD_REQUEST);
     }
 }
