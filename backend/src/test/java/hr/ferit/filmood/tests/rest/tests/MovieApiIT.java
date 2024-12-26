@@ -25,8 +25,8 @@ import org.springframework.http.HttpStatus;
 
 import java.util.Optional;
 
-import static hr.ferit.filmood.tests.rest.constant.AuthenticationConstants.EXISTING_USER_PASSWORD;
-import static hr.ferit.filmood.tests.rest.constant.AuthenticationConstants.EXISTING_USER_USERNAME;
+import static hr.ferit.filmood.tests.rest.constant.AuthenticationConstants.EXISTING_USER_PASSWORD_MARK;
+import static hr.ferit.filmood.tests.rest.constant.AuthenticationConstants.EXISTING_USER_USERNAME_MARK;
 import static hr.ferit.filmood.tests.rest.constant.MovieConstants.EXISTING_MOVIE_GENRES;
 import static hr.ferit.filmood.tests.rest.constant.MovieConstants.EXISTING_MOVIE_ID;
 import static hr.ferit.filmood.tests.rest.constant.MovieConstants.EXISTING_MOVIE_POSTER_PATH;
@@ -58,8 +58,8 @@ public class MovieApiIT extends BaseIT {
 
         Response loginResponse = AuthenticationTestClient.authenticate(
                 AuthenticationFactory.authRequest(
-                        EXISTING_USER_USERNAME,
-                        EXISTING_USER_PASSWORD)
+                        EXISTING_USER_USERNAME_MARK,
+                        EXISTING_USER_PASSWORD_MARK)
         );
 
         MovieTestClient
@@ -76,7 +76,7 @@ public class MovieApiIT extends BaseIT {
                 .statusCode(HttpStatus.OK.value());
 
         Optional<MovieEntity> movieOpt = movieRepository
-                .findFirstByUserUsernameAndMovieId(EXISTING_USER_USERNAME, NEW_MOVIE_ID);
+                .findFirstByUserUsernameAndMovieId(EXISTING_USER_USERNAME_MARK, NEW_MOVIE_ID);
 
         if(movieOpt.isPresent()) {
             MovieEntity movie = movieOpt.get();
@@ -101,8 +101,8 @@ public class MovieApiIT extends BaseIT {
 
         Response loginResponse = AuthenticationTestClient.authenticate(
                 AuthenticationFactory.authRequest(
-                        EXISTING_USER_USERNAME,
-                        EXISTING_USER_PASSWORD)
+                        EXISTING_USER_USERNAME_MARK,
+                        EXISTING_USER_PASSWORD_MARK)
         );
 
         MovieTestClient
@@ -130,8 +130,8 @@ public class MovieApiIT extends BaseIT {
 
         Response loginResponse = AuthenticationTestClient.authenticate(
                 AuthenticationFactory.authRequest(
-                        EXISTING_USER_USERNAME,
-                        EXISTING_USER_PASSWORD)
+                        EXISTING_USER_USERNAME_MARK,
+                        EXISTING_USER_PASSWORD_MARK)
         );
 
         MovieTestClient
@@ -149,8 +149,8 @@ public class MovieApiIT extends BaseIT {
 
         Response loginResponse = AuthenticationTestClient.authenticate(
                 AuthenticationFactory.authRequest(
-                        EXISTING_USER_USERNAME,
-                        EXISTING_USER_PASSWORD)
+                        EXISTING_USER_USERNAME_MARK,
+                        EXISTING_USER_PASSWORD_MARK)
         );
 
         MovieTestClient
@@ -159,7 +159,7 @@ public class MovieApiIT extends BaseIT {
                 .statusCode(HttpStatus.OK.value());
 
         Optional<MovieEntity> movieOpt = movieRepository
-                .findFirstByUserUsernameAndMovieId(EXISTING_USER_USERNAME, EXISTING_MOVIE_ID);
+                .findFirstByUserUsernameAndMovieId(EXISTING_USER_USERNAME_MARK, EXISTING_MOVIE_ID);
 
         if(movieOpt.isPresent()) {
             Assertions.fail();
@@ -175,8 +175,8 @@ public class MovieApiIT extends BaseIT {
 
         Response loginResponse = AuthenticationTestClient.authenticate(
                 AuthenticationFactory.authRequest(
-                        EXISTING_USER_USERNAME,
-                        EXISTING_USER_PASSWORD)
+                        EXISTING_USER_USERNAME_MARK,
+                        EXISTING_USER_PASSWORD_MARK)
         );
 
         MovieTestClient
@@ -196,8 +196,8 @@ public class MovieApiIT extends BaseIT {
 
         Response loginResponse = AuthenticationTestClient.authenticate(
                 AuthenticationFactory.authRequest(
-                        EXISTING_USER_USERNAME,
-                        EXISTING_USER_PASSWORD)
+                        EXISTING_USER_USERNAME_MARK,
+                        EXISTING_USER_PASSWORD_MARK)
         );
 
         PagedResponse<LibraryMovieDTO> response = MovieTestClient
@@ -231,8 +231,8 @@ public class MovieApiIT extends BaseIT {
 
         Response loginResponse = AuthenticationTestClient.authenticate(
                 AuthenticationFactory.authRequest(
-                        EXISTING_USER_USERNAME,
-                        EXISTING_USER_PASSWORD)
+                        EXISTING_USER_USERNAME_MARK,
+                        EXISTING_USER_PASSWORD_MARK)
         );
 
         PagedResponse<LibraryMovieDTO> response = MovieTestClient
@@ -266,8 +266,8 @@ public class MovieApiIT extends BaseIT {
 
         Response loginResponse = AuthenticationTestClient.authenticate(
                 AuthenticationFactory.authRequest(
-                        EXISTING_USER_USERNAME,
-                        EXISTING_USER_PASSWORD)
+                        EXISTING_USER_USERNAME_MARK,
+                        EXISTING_USER_PASSWORD_MARK)
         );
 
         PagedResponse<LibraryMovieDTO> response = MovieTestClient
@@ -299,8 +299,8 @@ public class MovieApiIT extends BaseIT {
 
         Response loginResponse = AuthenticationTestClient.authenticate(
                 AuthenticationFactory.authRequest(
-                        EXISTING_USER_USERNAME,
-                        EXISTING_USER_PASSWORD)
+                        EXISTING_USER_USERNAME_MARK,
+                        EXISTING_USER_PASSWORD_MARK)
         );
 
         MovieTestClient
@@ -309,7 +309,7 @@ public class MovieApiIT extends BaseIT {
                 .statusCode(HttpStatus.OK.value());
 
         Optional<MovieEntity> movieOpt = movieRepository
-                .findFirstByUserUsernameAndMovieId(EXISTING_USER_USERNAME, EXISTING_MOVIE_ID);
+                .findFirstByUserUsernameAndMovieId(EXISTING_USER_USERNAME_MARK, EXISTING_MOVIE_ID);
 
         if(movieOpt.isPresent()) {
             MovieEntity movie = movieOpt.get();
@@ -331,8 +331,8 @@ public class MovieApiIT extends BaseIT {
 
         Response loginResponse = AuthenticationTestClient.authenticate(
                 AuthenticationFactory.authRequest(
-                        EXISTING_USER_USERNAME,
-                        EXISTING_USER_PASSWORD)
+                        EXISTING_USER_USERNAME_MARK,
+                        EXISTING_USER_PASSWORD_MARK)
         );
 
         MovieTestClient

@@ -165,23 +165,24 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    public PagedResponse<LibraryMovieDTO> getLibrary(Boolean ratedOnly, LibraryPageQuery query, Authentication authentication) {
+    public PagedResponse<LibraryMovieDTO> getLibrary(Boolean ratedOnly, Integer page, Integer size, String sort, String direction, Integer userRating, Authentication authentication) {
 
-        Page<MovieEntity> page;
+        LibraryPageQuery query = new LibraryPageQuery(page, size, sort, direction, userRating);
+        Page<MovieEntity> moviesPage;
         query.setPage(query.getPage() - 1);
 
         if(ratedOnly != null && ratedOnly) {
-            page = movieRepository.findAllByUserAndUserRatingBetween(userUtils.getCurrentUser(authentication), 1, 5, query.toPageRequest());
+            moviesPage = movieRepository.findAllByUserAndUserRatingBetween(userUtils.getCurrentUser(authentication), 1, 5, query.toPageRequest());
         }
         else if(query.getUserRating() != null) {
-            page = movieRepository.findAllByUserAndUserRatingBetween(userUtils.getCurrentUser(authentication), query.getUserRating(), query.getUserRating(), query.toPageRequest());
+            moviesPage = movieRepository.findAllByUserAndUserRatingBetween(userUtils.getCurrentUser(authentication), query.getUserRating(), query.getUserRating(), query.toPageRequest());
         } else {
-            page = movieRepository.findAllByUserAndUserRatingBetween(userUtils.getCurrentUser(authentication), 0, 5, query.toPageRequest());
+            moviesPage = movieRepository.findAllByUserAndUserRatingBetween(userUtils.getCurrentUser(authentication), 0, 5, query.toPageRequest());
         }
 
         List<LibraryMovieDTO> library = new ArrayList<>();
 
-        for(var movie : page.getContent()) {
+        for(var movie : moviesPage.getContent()) {
             library.add(new LibraryMovieDTO(
                     movie.getTitle(),
                     Arrays.asList(movie.getGenres().split(",")),
@@ -193,7 +194,7 @@ public class MovieServiceImpl implements MovieService {
             ));
         }
 
-        return new PagedResponse<>(PageDTO.from(page), library);
+        return new PagedResponse<>(PageDTO.from(moviesPage), library);
     }
 
     @Override

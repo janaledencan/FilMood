@@ -2,7 +2,6 @@ package hr.ferit.filmood.rest.api.movie;
 
 import hr.ferit.filmood.common.exception.response.ErrorResponse;
 import hr.ferit.filmood.common.rest.PagedResponse;
-import hr.ferit.filmood.common.rest.movie.LibraryPageQuery;
 import hr.ferit.filmood.rest.api.movie.dto.LibraryMovieDTO;
 import hr.ferit.filmood.rest.api.movie.dto.MovieDetailedDTO;
 import hr.ferit.filmood.rest.api.movie.request.AddMovieToLibraryRequest;
@@ -161,13 +160,16 @@ public interface MovieController {
     @GetMapping("/library")
     PagedResponse<LibraryMovieDTO> getLibrary(@Parameter(description = "Specifies whether you want to fetch only rated movies (User rated them [1, 5]), not required, if wanted put to true", example = "true")
                                               @RequestParam(name = "rated-only", required = false) Boolean ratedOnly,
-                                              @Parameter(description = "Specifies properties of page request, parameter page is in range [1, totalNumber of pages returned in response], " +
-                                                      "size represents wanted number of elements per page, " +
-                                                      "sort is parameter name by which to sort movies (suggested to use 'userRating' or 'createdAt' here), " +
-                                                      "direction is DESC (descending) or ASC (ascending), " +
-                                                      "userRating if null fetches all movies, if 0 fetches unrated movies, if any value between " +
-                                                      "1-5 fetches all movies which user rated with that rating")
-                                              @RequestBody @NotNull @Valid LibraryPageQuery query,
+                                              @Parameter(description = "Page in range [1, totalNumber of pages returned in response]", example = "1")
+                                              @RequestParam(name = "page", required = false) Integer page,
+                                              @Parameter(description = "Represents wanted number of elements per page", example = "10")
+                                              @RequestParam(name = "size", required = false) Integer size,
+                                              @Parameter(description = "Parameter name by which to sort movies (suggested to use 'userRating' or 'createdAt' here)", example = "userRating")
+                                              @RequestParam(name = "sort", required = false) String sort,
+                                              @Parameter(description = "DESC (descending) or ASC (ascending)", example = "DESC")
+                                              @RequestParam(name = "direction", required = false) String direction,
+                                              @Parameter(description = "If not provided fetches all movies, if 0 fetches unrated movies, if any value between 1-5 fetches all movies which user rated with that rating", example = "0")
+                                              @RequestParam(name = "user-rating", required = false) Integer userRating,
                                               Authentication authentication);
 
     @Operation(

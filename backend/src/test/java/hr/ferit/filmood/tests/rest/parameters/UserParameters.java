@@ -8,8 +8,10 @@ import java.util.stream.Stream;
 import static hr.ferit.filmood.tests.rest.constant.AuthenticationConstants.ABOVE_MAXIMUM_AGE;
 import static hr.ferit.filmood.tests.rest.constant.AuthenticationConstants.BELOW_MINIMUM_AGE;
 import static hr.ferit.filmood.tests.rest.constant.AuthenticationConstants.BLANK_STRING;
-import static hr.ferit.filmood.tests.rest.constant.AuthenticationConstants.EXISTING_USER_EMAIL;
-import static hr.ferit.filmood.tests.rest.constant.AuthenticationConstants.EXISTING_USER_USERNAME;
+import static hr.ferit.filmood.tests.rest.constant.AuthenticationConstants.EXISTING_USER_EMAIL_HUGH;
+import static hr.ferit.filmood.tests.rest.constant.AuthenticationConstants.EXISTING_USER_EMAIL_MARK;
+import static hr.ferit.filmood.tests.rest.constant.AuthenticationConstants.EXISTING_USER_USERNAME_HUGH;
+import static hr.ferit.filmood.tests.rest.constant.AuthenticationConstants.EXISTING_USER_USERNAME_MARK;
 import static hr.ferit.filmood.tests.rest.constant.AuthenticationConstants.INVALID_EMAIL;
 import static hr.ferit.filmood.tests.rest.constant.AuthenticationConstants.INVALID_GENDER;
 import static hr.ferit.filmood.tests.rest.constant.AuthenticationConstants.INVALID_PASSWORD;
@@ -21,6 +23,7 @@ import static hr.ferit.filmood.tests.rest.constant.AuthenticationConstants.NEW_U
 import static hr.ferit.filmood.tests.rest.constant.AuthenticationConstants.NEW_USER_PASSWORD;
 import static hr.ferit.filmood.tests.rest.constant.AuthenticationConstants.NEW_USER_USERNAME;
 import static hr.ferit.filmood.tests.rest.constant.AuthenticationConstants.NULL_AGE;
+import static hr.ferit.filmood.tests.rest.constant.AuthenticationConstants.NULL_STRING;
 
 public class UserParameters {
 
@@ -63,6 +66,15 @@ public class UserParameters {
                         NEW_USER_AGE,
                         NEW_USER_GENDER
                 ), "Blank password"),
+                Arguments.of(AuthenticationFactory.createUpdateUserRequest(
+                        NEW_USER_USERNAME,
+                        NULL_STRING,
+                        NEW_USER_FIRST_NAME,
+                        NEW_USER_LAST_NAME,
+                        NEW_USER_EMAIL,
+                        NEW_USER_AGE,
+                        NEW_USER_GENDER
+                ), "Null password"),
                 Arguments.of(AuthenticationFactory.createUpdateUserRequest(
                         NEW_USER_USERNAME,
                         NEW_USER_PASSWORD,
@@ -140,12 +152,12 @@ public class UserParameters {
                         NEW_USER_PASSWORD,
                         NEW_USER_FIRST_NAME,
                         NEW_USER_LAST_NAME,
-                        EXISTING_USER_EMAIL,
+                        EXISTING_USER_EMAIL_MARK,
                         NEW_USER_AGE,
                         NEW_USER_GENDER
                 ), "Already existent email"),
                 Arguments.of(AuthenticationFactory.createUpdateUserRequest(
-                        EXISTING_USER_USERNAME,
+                        EXISTING_USER_USERNAME_MARK,
                         NEW_USER_PASSWORD,
                         NEW_USER_FIRST_NAME,
                         NEW_USER_LAST_NAME,
@@ -263,12 +275,12 @@ public class UserParameters {
                         NEW_USER_PASSWORD,
                         NEW_USER_FIRST_NAME,
                         NEW_USER_LAST_NAME,
-                        EXISTING_USER_EMAIL,
+                        EXISTING_USER_EMAIL_HUGH,
                         NEW_USER_AGE,
                         NEW_USER_GENDER
                 ), "Already existent email"),
                 Arguments.of(AuthenticationFactory.createUpdateUserRequest(
-                        EXISTING_USER_USERNAME,
+                        EXISTING_USER_USERNAME_HUGH,
                         NEW_USER_PASSWORD,
                         NEW_USER_FIRST_NAME,
                         NEW_USER_LAST_NAME,
