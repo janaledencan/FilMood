@@ -5,16 +5,22 @@ import Button from "react-bootstrap/Button";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 import { Splide, SplideSlide } from "@splidejs/react-splide";
 import "@splidejs/react-splide/css";
+import { useNavigate } from "react-router-dom";
 
 function Library() {
     const [library, setLibrary] = useState([]);
     const [filter, setFilter] = useState("all");
+    const navigate = useNavigate();
 
     const pageNumber = 1;
     const pageSize = 10;
     const sort = "userRating";
     const direction = "ASC";
     const userRating = filter === "rated" ? 5 : 0;
+
+    const onMovieClick = (movie) => {
+        navigate(`/details`, { state: { movie } });
+    };
 
     useEffect(() => {
         const fetchLibrary = async () => {
@@ -110,11 +116,11 @@ function Library() {
                 }}
             >
                 {filteredLibrary.map((movie) => (
-                    <SplideSlide key={movie.movieId}>
+                    <SplideSlide key={movie.movieId}  onClick={() => onMovieClick(movie)}>
                         <Card>
                             <Card.Img
                                 variant="top"
-                                src={`https://image.tmdb.org/t/p/w200/${movie.posterPath}`}
+                                src={`https://image.tmdb.org/t/p/w780/${movie.posterPath}`}
                             />
                             <Card.Body>
                                 <Card.Title>{movie.title}</Card.Title>

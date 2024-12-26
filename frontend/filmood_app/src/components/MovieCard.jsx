@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 
 function MovieCard({ movie }) {
     const [isInMyLibrary, setIsInMyLibrary] = useState(movie.isInMyLibrary);
@@ -41,7 +42,7 @@ function MovieCard({ movie }) {
     return (
         <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
             <Card style={{ width: '18rem' }} className="my-3 mx-2 shadow-lg">
-                <Card.Img variant="top" className="movie-image" src={`https://image.tmdb.org/t/p/w200/${movie.posterPath}`} />
+                <Card.Img variant="top" className="movie-image" src={`https://image.tmdb.org/t/p/original/${movie.posterPath}`} />
                 <Card.Body>
                     <Card.Title>{movie.title}</Card.Title>
                     <Card.Text>
@@ -54,7 +55,9 @@ function MovieCard({ movie }) {
                             Add to Library
                         </Button>
                     )}
-                    <Button className="btn-tertiary" variant="secondary">View Details</Button>
+                    <Link to={`/details`} state={{ movie }}>
+                        <Button className="btn-tertiary" variant="secondary">View Details</Button>
+                    </Link>
                 </Card.Body>
             </Card>
         </motion.div>

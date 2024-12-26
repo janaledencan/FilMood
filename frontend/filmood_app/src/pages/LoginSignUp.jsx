@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Form, Button, Container } from "react-bootstrap";
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router-dom";
 
 function LoginSignUp({ onLogin }) {
     const [isSignup, setIsSignup] = useState(false);
@@ -13,21 +13,47 @@ function LoginSignUp({ onLogin }) {
         age: "",
         gender: "Male",
     });
-
-    const navigate = useNavigate(); 
+    const [passwordError, setPasswordError] = useState("");
+    const navigate = useNavigate();
 
     const toggleMode = () => setIsSignup(!isSignup);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
+
+        if (name === "password") {
+            validatePassword(value);
+        }
+
         setFormData((prevData) => ({
             ...prevData,
             [name]: value,
         }));
     };
 
+    const validatePassword = (password) => {
+        const minLength = 8;
+        const hasUpperCase = /[A-Z]/.test(password);
+        const hasNumber = /\d/.test(password);
+
+        if (password.length < minLength) {
+            setPasswordError("Password must be at least 8 characters long.");
+        } else if (!hasUpperCase) {
+            setPasswordError("Password must contain at least one uppercase letter.");
+        } else if (!hasNumber) {
+            setPasswordError("Password must contain at least one number.");
+        } else {
+            setPasswordError("");
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (passwordError) {
+            console.error("Fix password errors before submitting.");
+            return;
+        }
 
         const dataToSend = isSignup
             ? formData
@@ -44,18 +70,21 @@ function LoginSignUp({ onLogin }) {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify(dataToSend),
-                credentials: "include"
+                credentials: "include",
             });
 
             if (!response.ok) {
                 throw new Error("Failed to " + (isSignup ? "sign up" : "log in"));
             }
 
-            onLogin();
-            navigate("/mood");
-        } 
-        catch (error) 
-        {
+            if (!isSignup) {
+                onLogin();
+                navigate("/mood");
+            }
+            else {
+                setIsSignup(false);
+            }
+        } catch (error) {
             console.error("Error:", error.message);
         }
     };
@@ -74,7 +103,7 @@ function LoginSignUp({ onLogin }) {
                                 name="username"
                                 value={formData.username}
                                 onChange={handleChange}
-                                className="my-2"
+                                className="my-2 fixed-width"
                             />
                         </Form.Group>
                         <Form.Group controlId="email">
@@ -84,7 +113,7 @@ function LoginSignUp({ onLogin }) {
                                 name="email"
                                 value={formData.email}
                                 onChange={handleChange}
-                                className="my-2"
+                                className="my-2 fixed-width"
                             />
                         </Form.Group>
                         <Form.Group controlId="firstName">
@@ -94,7 +123,7 @@ function LoginSignUp({ onLogin }) {
                                 name="firstName"
                                 value={formData.firstName}
                                 onChange={handleChange}
-                                className="my-2"
+                                className="my-2 fixed-width"
                             />
                         </Form.Group>
                         <Form.Group controlId="lastName">
@@ -104,7 +133,7 @@ function LoginSignUp({ onLogin }) {
                                 name="lastName"
                                 value={formData.lastName}
                                 onChange={handleChange}
-                                className="my-2"
+                                className="my-2 fixed-width"
                             />
                         </Form.Group>
                         <Form.Group controlId="gender">
@@ -113,7 +142,7 @@ function LoginSignUp({ onLogin }) {
                                 name="gender"
                                 value={formData.gender}
                                 onChange={handleChange}
-                                className="my-2"
+                                className="my-2 fixed-width"
                             >
                                 <option value="Male">Male</option>
                                 <option value="Female">Female</option>
@@ -127,7 +156,7 @@ function LoginSignUp({ onLogin }) {
                                 name="age"
                                 value={formData.age}
                                 onChange={handleChange}
-                                className="my-2"
+                                className="my-2 fixed-width"
                             />
                         </Form.Group>
                     </>
@@ -141,7 +170,7 @@ function LoginSignUp({ onLogin }) {
                             name="username"
                             value={formData.username}
                             onChange={handleChange}
-                            className="my-2"
+                            className="my-2 fixed-width"
                         />
                     </Form.Group>
                 )}
@@ -153,10 +182,14 @@ function LoginSignUp({ onLogin }) {
                         name="password"
                         value={formData.password}
                         onChange={handleChange}
-                        className="my-2"
+                        className="my-2 fixed-width"
                     />
                 </Form.Group>
-
+                <div className="error-placeholder">
+                        {passwordError && (
+                            <div className="text-danger">{passwordError}</div>
+                        )}
+                    </div>
                 <Button variant="primary" type="submit" className="w-100 mt-2">
                     {isSignup ? "Sign Up" : "Login"}
                 </Button>

@@ -8,7 +8,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 function Home({ category, movies }) {
     const location = useLocation();
-    const navigate = useNavigate();
 
     const locationCategory = location.state?.locationCategory;
     const locationMovies = location.state?.locationMovies;
@@ -19,10 +18,6 @@ function Home({ category, movies }) {
     if (!displayMovies || !displayCategory) {
         return <div>Loading...</div>; 
     }
-
-    const onMovieClick = (movie) => {
-        navigate(`/details`, { state: { movie, movies, category } });
-    };
 
     return (
         <Container>
@@ -46,7 +41,7 @@ function Home({ category, movies }) {
                     }}
                 >
                     {displayMovies.map((movie) => (
-                        <SplideSlide key={movie.movieId} onClick={() => onMovieClick(movie)}>
+                        <SplideSlide key={movie.movieId}>
                             <MovieCard movie={movie} />
                         </SplideSlide>
                     ))}
