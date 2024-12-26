@@ -20,8 +20,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Optional;
 
-import static hr.ferit.filmood.tests.rest.constant.AuthenticationConstants.EXISTING_USER_PASSWORD;
-import static hr.ferit.filmood.tests.rest.constant.AuthenticationConstants.EXISTING_USER_USERNAME;
+import static hr.ferit.filmood.tests.rest.constant.AuthenticationConstants.EXISTING_USER_PASSWORD_MARK;
+import static hr.ferit.filmood.tests.rest.constant.AuthenticationConstants.EXISTING_USER_USERNAME_MARK;
 import static hr.ferit.filmood.tests.rest.constant.AuthenticationConstants.NEW_USER_AGE;
 import static hr.ferit.filmood.tests.rest.constant.AuthenticationConstants.NEW_USER_EMAIL;
 import static hr.ferit.filmood.tests.rest.constant.AuthenticationConstants.NEW_USER_FIRST_NAME;
@@ -45,8 +45,8 @@ public class AuthenticationApiIT extends BaseIT {
 
         AuthenticationTestClient
                 .authenticate(AuthenticationFactory.authRequest(
-                        EXISTING_USER_USERNAME,
-                        EXISTING_USER_PASSWORD)
+                        EXISTING_USER_USERNAME_MARK,
+                        EXISTING_USER_PASSWORD_MARK)
                 )
                 .then()
                 .statusCode(HttpStatus.OK.value());
@@ -59,7 +59,7 @@ public class AuthenticationApiIT extends BaseIT {
 
         AuthenticationTestClient
                 .authenticate(AuthenticationFactory.authRequest(
-                        EXISTING_USER_USERNAME,
+                        EXISTING_USER_USERNAME_MARK,
                         WRONG_PASSWORD)
                 )
                 .then()
@@ -84,7 +84,7 @@ public class AuthenticationApiIT extends BaseIT {
                 .then()
                 .statusCode(HttpStatus.OK.value());
 
-        Assertions.assertEquals(2, userRepository.findAll().size());
+        Assertions.assertEquals(3, userRepository.findAll().size());
     }
 
     @ParameterizedTest(name = "{1}")
@@ -106,8 +106,8 @@ public class AuthenticationApiIT extends BaseIT {
 
         Response loginResponse = AuthenticationTestClient.authenticate(
                 AuthenticationFactory.authRequest(
-                        EXISTING_USER_USERNAME,
-                        EXISTING_USER_PASSWORD)
+                        EXISTING_USER_USERNAME_MARK,
+                        EXISTING_USER_PASSWORD_MARK)
         );
 
         AuthenticationTestClient
@@ -124,7 +124,7 @@ public class AuthenticationApiIT extends BaseIT {
                 .then()
                 .statusCode(HttpStatus.OK.value());
 
-        Assertions.assertEquals(1, userRepository.findAll().size());
+        Assertions.assertEquals(2, userRepository.findAll().size());
 
         Optional<UserEntity> updatedUserOpt = userRepository.findByUsername(NEW_USER_USERNAME);
 
@@ -152,8 +152,8 @@ public class AuthenticationApiIT extends BaseIT {
 
         Response loginResponse = AuthenticationTestClient.authenticate(
                 AuthenticationFactory.authRequest(
-                        EXISTING_USER_USERNAME,
-                        EXISTING_USER_PASSWORD)
+                        EXISTING_USER_USERNAME_MARK,
+                        EXISTING_USER_PASSWORD_MARK)
         );
 
         AuthenticationTestClient
@@ -171,8 +171,8 @@ public class AuthenticationApiIT extends BaseIT {
 
         Response loginResponse = AuthenticationTestClient.authenticate(
                 AuthenticationFactory.authRequest(
-                        EXISTING_USER_USERNAME,
-                        EXISTING_USER_PASSWORD)
+                        EXISTING_USER_USERNAME_MARK,
+                        EXISTING_USER_PASSWORD_MARK)
         );
 
         UserResponse response = AuthenticationTestClient
@@ -184,7 +184,7 @@ public class AuthenticationApiIT extends BaseIT {
                 .body()
                 .as(UserResponse.class);
 
-        Optional<UserEntity> userOpt = userRepository.findByUsername(EXISTING_USER_USERNAME);
+        Optional<UserEntity> userOpt = userRepository.findByUsername(EXISTING_USER_USERNAME_MARK);
 
         if(userOpt.isPresent()) {
             UserEntity user = userOpt.get();

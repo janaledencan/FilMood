@@ -24,6 +24,8 @@ import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
+
 @Service
 @Transactional
 public class AuthenticationServiceImpl implements AuthenticationService {
@@ -65,16 +67,24 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public void signup(CreateUpdateUserRequest createUpdateUserRequest) {
 
-        checkUsernameAndEmailUniqueness(createUpdateUserRequest.username(), createUpdateUserRequest.email().toLowerCase());
+        String username = createUpdateUserRequest.username();
+        String email = createUpdateUserRequest.email().toLowerCase();
 
-        if(createUpdateUserRequest.password().isBlank()) {
-            throw UserException.blankPassword();
+        if(userRepository.findByUsername(username).isPresent()) {
+            throw UserException.usernameAlreadyExists();
+        }
+        if(userRepository.findByEmail(email).isPresent()) {
+            throw UserException.emailAlreadyExists();
+        }
+
+        if(createUpdateUserRequest.password() == null || createUpdateUserRequest.password().isBlank()) {
+            throw UserException.blankOrNullPassword();
         }
 
         UserEntity user = new UserEntity(createUpdateUserRequest.firstName(),
                 createUpdateUserRequest.lastName(),
-                createUpdateUserRequest.username(),
-                createUpdateUserRequest.email().toLowerCase(),
+                username,
+                email,
                 createUpdateUserRequest.age(),
                 bCryptPasswordEncoder.encode(createUpdateUserRequest.password()),
                 createUpdateUserRequest.gender(),
@@ -91,17 +101,24 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public void update(CreateUpdateUserRequest createUpdateUserRequest, Authentication authentication) {
 
-        checkUsernameAndEmailUniqueness(createUpdateUserRequest.username(), createUpdateUserRequest.email().toLowerCase());
-
         UserEntity currentUser = userUtils.getCurrentUser(authentication);
+        String newUsername = createUpdateUserRequest.username();
+        String newEmail = createUpdateUserRequest.email().toLowerCase();
 
-        currentUser.setUsername(createUpdateUserRequest.username());
-        if(!createUpdateUserRequest.password().isBlank()) {
+        if(!Objects.equals(currentUser.getUsername(), newUsername) && userRepository.findByUsername(newUsername).isPresent()) {
+            throw UserException.usernameAlreadyExists();
+        }
+        if(!Objects.equals(currentUser.getEmail(), newEmail) && userRepository.findByEmail(newEmail).isPresent()) {
+            throw UserException.emailAlreadyExists();
+        }
+
+        currentUser.setUsername(newUsername);
+        if(createUpdateUserRequest.password() != null && !createUpdateUserRequest.password().isBlank()) {
             currentUser.setPassword(bCryptPasswordEncoder.encode(createUpdateUserRequest.password()));
         }
         currentUser.setAge(createUpdateUserRequest.age());
         currentUser.setGender(createUpdateUserRequest.gender());
-        currentUser.setEmail(createUpdateUserRequest.email().toLowerCase());
+        currentUser.setEmail(newEmail);
         currentUser.setFirstName(createUpdateUserRequest.firstName());
         currentUser.setLastName(createUpdateUserRequest.lastName());
 
@@ -116,14 +133,5 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public LogoutResponse logoutSuccess() {
         return new LogoutResponse("Logged out.");
-    }
-
-    private void checkUsernameAndEmailUniqueness(String username, String email) {
-        if(userRepository.findByUsername(username).isPresent()) {
-            throw UserException.usernameAlreadyExists();
-        }
-        if(userRepository.findByEmail(email).isPresent()) {
-            throw UserException.emailAlreadyExists();
-        }
     }
 }

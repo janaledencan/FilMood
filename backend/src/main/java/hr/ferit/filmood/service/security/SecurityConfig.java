@@ -16,6 +16,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextRepository;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
+import java.util.List;
 
 import static hr.ferit.filmood.common.CommonConstants.AUTH_PATH;
 
@@ -47,6 +52,10 @@ public class SecurityConfig {
         http.requestCache(RequestCacheConfigurer::disable);
         http.authenticationManager(authenticationManager(userDetailsService, bCryptPasswordEncoder));
         http.csrf(AbstractHttpConfigurer::disable);
+        http.cors(httpSecurityCorsConfigurer ->
+                httpSecurityCorsConfigurer
+                        .configurationSource(configurationSource())
+        );
         http.logout(logout -> logout
                 .logoutUrl(AUTH_PATH + "/logout")
                 .logoutSuccessUrl(AUTH_PATH + "/logout/success")
@@ -76,5 +85,17 @@ public class SecurityConfig {
         authenticationProvider.setPasswordEncoder(passwordEncoder);
 
         return new ProviderManager(authenticationProvider);
+    }
+
+    public UrlBasedCorsConfigurationSource configurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOrigins(List.of("http://localhost:3000"));
+        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedHeaders(List.of("*"));
+        config.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
     }
 }
