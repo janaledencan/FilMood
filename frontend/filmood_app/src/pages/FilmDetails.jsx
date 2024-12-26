@@ -1,28 +1,37 @@
 import React from "react";
-import { useLocation } from "react-router-dom";
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
+import { useLocation, useNavigate } from "react-router-dom";
+import { Container, Row, Col, Button } from "react-bootstrap";
 import styled from "styled-components";
 
 function FilmDetails() {
     const location = useLocation();
-    const movie = location.state.movie; // Pass movie data via state
+    const navigate = useNavigate();
+    const { movie, movies } = location.state || {}; 
+
+    const handleBack = () => {
+        if (movies) {
+            navigate(-1, { state: { movies } });
+        } else {
+            navigate(-1);
+        }
+    };
 
     return (
         <Container>
             <Row className="my-5">
                 <Col md={4}>
-                    <MovieImage src={movie.image} style={{ height: '75vh', objectFit: 'cover' }} alt={movie.title} />
+                    <MovieImage 
+                        src={`https://image.tmdb.org/t/p/w200/${movie.posterPath}`} 
+                        alt={movie.title} 
+                    />
                 </Col>
                 <Col md={8}>
-                    <Details className="ms-4">
-                        <h2 className="movie-title">{movie.name}</h2>
-                        <p><strong>Year:</strong> {movie.year}</p>
-                        <p><strong>Duration:</strong> {movie.duration} mins</p>
+                    <Details>
+                        <h2>{movie.title}</h2>
+                        <p><strong>Year:</strong> {movie.releaseYear}</p>
                         <p><strong>Rating:</strong> {movie.rating}/10</p>
-                        <p><strong>Genre:</strong> {movie.genre}</p>
-                        <p><strong>Synopsis:</strong> {movie.synopsis}</p>
+                        <p><strong>Genre:</strong> {movie.genres.join(', ')}</p>
+                        <Button onClick={handleBack} className="mt-3">Back</Button>
                     </Details>
                 </Col>
             </Row>
@@ -45,13 +54,6 @@ const Details = styled.div`
   }
   p {
     font-size: 1.1rem;
-    margin-bottom: 0.5rem;
-  }
-`;
-
-const AdditionalDetails = styled.div`
-  p {
-    font-size: 1rem;
     margin-bottom: 0.5rem;
   }
 `;

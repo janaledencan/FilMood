@@ -1,45 +1,52 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Container from 'react-bootstrap/Container';
-import mockedFilms from '../components/assets/mockedFilms';
 import { Splide, SplideSlide } from "@splidejs/react-splide";
 import "@splidejs/react-splide/css";
 import styled from "styled-components";
 import MovieCard from '../components/MovieCard';
+import { useLocation, useNavigate } from 'react-router-dom';
 
-function Home({ category }) {
-    const [movies, setMovies] = useState([]);
+function Home({ category, movies }) {
+    const location = useLocation();
+    const navigate = useNavigate();
 
-    useEffect(() => {
-        // Fetch movies based on the selected category
-        fetch(`/api/movies?category=${category}`) // Replace with API endpoint
-            .then((res) => res.json())
-            .then((data) => setMovies(data))
-            .catch((err) => console.error('Error fetching movies:', err));
-    }, [category]);
+    const locationCategory = location.state?.locationCategory;
+    const locationMovies = location.state?.locationMovies;
+
+    const displayCategory = category || locationCategory;
+    const displayMovies = movies || locationMovies;
+    
+    if (!displayMovies || !displayCategory) {
+        return <div>Loading...</div>; 
+    }
+
+    const onMovieClick = (movie) => {
+        navigate(`/details`, { state: { movie, movies, category } });
+    };
 
     return (
         <Container>
             <Wrapper>
-                <h2>{category.replace('_', ' ').toUpperCase()}</h2>
+                <h2>{displayCategory.replace('_', ' ').toUpperCase()}</h2>
 
                 <Splide
                     options={{
                         perPage: 4,
                         arrows: false,
                         drag: "free",
-                        gap: "1rem", // Default gap between slides
+                        gap: "1rem",
                         breakpoints: {
-                            1400: { perPage: 4, gap: "5rem" }, // For screens <= 1400px
+                            1400: { perPage: 4, gap: "5rem" },
                             1200: { perPage: 3, gap: "2rem" },
                             1000: { perPage: 2, gap: "2rem" },
-                            800: { perPage: 2, gap: "2.5rem" },    // For screens <= 800px
+                            800: { perPage: 2, gap: "2.5rem" },
                             770: { perPage: 2, gap: "4 rem" },
-                            450: { perPage: 1, gap: "3rem" },    // For screens <= 450px
+                            450: { perPage: 1, gap: "3rem" },
                         },
                     }}
                 >
-                    {mockedFilms.map((movie) => (
-                        <SplideSlide key={movie.id}>
+                    {displayMovies.map((movie) => (
+                        <SplideSlide key={movie.movieId} onClick={() => onMovieClick(movie)}>
                             <MovieCard movie={movie} />
                         </SplideSlide>
                     ))}
@@ -52,6 +59,5 @@ function Home({ category }) {
 export default Home;
 
 const Wrapper = styled.div`
-      margin: 4rem 0rem;
-    `;
-
+    margin: 4rem 0rem;
+`;

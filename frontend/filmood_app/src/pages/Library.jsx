@@ -1,55 +1,80 @@
 import React, { useState, useEffect } from "react";
 import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
+import { Splide, SplideSlide } from "@splidejs/react-splide";
+import "@splidejs/react-splide/css";
 
 function Library() {
-    const [library, setLibrary] = useState([
-        {
-            id: 1,
-            name: "Inception",
-            image: "https://via.placeholder.com/150",
-            year: 2010,
-            genre: "Sci-Fi",
-            rating: 0,
-        },
-        {
-            id: 2,
-            name: "The Dark Knight",
-            image: "https://via.placeholder.com/150",
-            year: 2008,
-            genre: "Action",
-            rating: 0,
-        },
-    ]);
-
+    const [library, setLibrary] = useState([]);
     const [filter, setFilter] = useState("all");
 
-    // Load library from localStorage when the component mounts
-    useEffect(() => {
-        const savedLibrary = JSON.parse(localStorage.getItem("library"));
-        if (savedLibrary) setLibrary(savedLibrary);
-    }, []);
+    const pageNumber = 1;
+    const pageSize = 10;
+    const sort = "userRating";
+    const direction = "ASC";
+    const userRating = filter === "rated" ? 5 : 0;
 
-    // Save library to localStorage whenever it changes
     useEffect(() => {
-        localStorage.setItem("library", JSON.stringify(library));
-    }, [library]);
+        const fetchLibrary = async () => {
+            try {
+                const response = await fetch(
+                    `http://localhost:8080/api/v1/movie/library?page=${pageNumber}&size=${pageSize}&sort=${sort}&direction=${direction}&userRating=${userRating}`,
+                    {
+                        method: "GET",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        credentials: "include",
+                    }
+                );
 
-    const handleRating = (id, stars) => {
-        const updatedLibrary = library.map((movie) =>
-            movie.id === id ? { ...movie, rating: stars } : movie
+                if (!response.ok) {
+                    throw new Error("Failed to fetch library");
+                }
+
+                const data = await response.json();
+                setLibrary(data.content);
+            } catch (error) {
+                console.error("Error fetching library:", error);
+            }
+        };
+
+        fetchLibrary();
+    }, [filter]);
+
+    const handleRating = async (movieId, rating) => {
+        setLibrary((prevLibrary) =>
+            prevLibrary.map((movie) =>
+                movie.movieId === movieId ? { ...movie, userRating: rating } : movie
+            )
         );
-        setLibrary(updatedLibrary);
+
+        try {
+            const response = await fetch(`http://localhost:8080/api/v1/movie/library/${movieId}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ userRating: rating }),
+                credentials: "include",
+            });
+
+            if (!response.ok) {
+                console.error("Failed to update movie rating");
+            } else {
+                console.log(`Movie with ID ${movieId} rated ${rating}`);
+            }
+        } catch (error) {
+            console.error("Error updating movie rating:", error);
+        }
     };
 
     const filteredLibrary = library.filter((movie) => {
-        if (filter === "rated") return movie.rating > 0;
-        if (filter === "notRated") return movie.rating === 0;
-        return true; // "all" filter
+        if (filter === "rated") return movie.userRating > 0;
+        if (filter === "notRated") return movie.userRating === 0;
+        return true;
     });
 
     return (
@@ -63,23 +88,40 @@ function Library() {
                 <Button variant="success" onClick={() => setFilter("rated")}>
                     Rated
                 </Button>
-                <Button className="btn-notRaited" onClick={() => setFilter("notRated")}>
+                <Button className="btn-notRated" onClick={() => setFilter("notRated")}>
                     Not Rated
                 </Button>
             </ButtonGroup>
 
-            <Row>
+            <Splide
+                options={{
+                    perPage: 4,
+                    arrows: false,
+                    drag: "free",
+                    gap: "1rem",
+                    breakpoints: {
+                        1400: { perPage: 4, gap: "5rem" },
+                        1200: { perPage: 3, gap: "2rem" },
+                        1000: { perPage: 2, gap: "2rem" },
+                        800: { perPage: 2, gap: "2.5rem" },
+                        770: { perPage: 2, gap: "4rem" },
+                        450: { perPage: 1, gap: "3rem" },
+                    },
+                }}
+            >
                 {filteredLibrary.map((movie) => (
-                    <Col key={movie.id} xs={12} sm={6} md={4} lg={3} className="my-3">
+                    <SplideSlide key={movie.movieId}>
                         <Card>
-                            <Card.Img variant="top" src={movie.image} />
+                            <Card.Img
+                                variant="top"
+                                src={`https://image.tmdb.org/t/p/w200/${movie.posterPath}`}
+                            />
                             <Card.Body>
-                                <Card.Title>{movie.name}</Card.Title>
+                                <Card.Title>{movie.title}</Card.Title>
                                 <Card.Text>
-                                    <strong>Year:</strong> {movie.year} <br />
-                                    <strong>Genre:</strong> {movie.genre}
+                                    <strong>Year:</strong> {movie.releaseYear} <br />
+                                    <strong>Genre:</strong> {movie.genres.join(", ")}
                                 </Card.Text>
-                                {/* Star Rating */}
                                 <div>
                                     <strong>Grade: </strong>
                                     {[1, 2, 3, 4, 5].map((star) => (
@@ -87,10 +129,10 @@ function Library() {
                                             key={star}
                                             style={{
                                                 fontSize: "1.5rem",
-                                                color: movie.rating >= star ? "gold" : "gray",
+                                                color: movie.userRating >= star ? "gold" : "gray",
                                                 cursor: "pointer",
                                             }}
-                                            onClick={() => handleRating(movie.id, star)}
+                                            onClick={() => handleRating(movie.movieId, star)}
                                         >
                                             ★
                                         </span>
@@ -98,9 +140,9 @@ function Library() {
                                 </div>
                             </Card.Body>
                         </Card>
-                    </Col>
+                    </SplideSlide>
                 ))}
-            </Row>
+            </Splide>
         </Container>
     );
 }
