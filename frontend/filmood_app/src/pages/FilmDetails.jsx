@@ -21,7 +21,7 @@ function FilmDetails() {
             <Row className="my-5">
                 <Col md={4}>
                     <MovieImage 
-                        src={`https://image.tmdb.org/t/p/w200/${movie.posterPath}`} 
+                        src={`https://image.tmdb.org/t/p/w780/${movie.posterPath}`} 
                         alt={movie.title} 
                     />
                 </Col>
@@ -29,7 +29,7 @@ function FilmDetails() {
                     <Details>
                         <h2>{movie.title}</h2>
                         <p><strong>Year:</strong> {movie.releaseYear}</p>
-                        <p><strong>Rating:</strong> {movie.rating}/10</p>
+                        <p><strong>Rating:</strong> {movie.voteAverage}/10</p>
                         <p><strong>Genre:</strong> {movie.genres.join(', ')}</p>
                         <Button onClick={handleBack} className="mt-3">Back</Button>
                     </Details>
