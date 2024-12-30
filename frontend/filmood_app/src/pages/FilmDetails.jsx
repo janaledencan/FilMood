@@ -6,7 +6,7 @@ import styled from "styled-components";
 function FilmDetails() {
     const location = useLocation();
     const navigate = useNavigate();
-    const { movie, movies } = location.state || {}; 
+    const { movie, movies } = location.state || {};
 
     const handleBack = () => {
         if (movies) {
@@ -29,8 +29,24 @@ function FilmDetails() {
                     <Details>
                         <h2>{movie.title}</h2>
                         <p><strong>Year:</strong> {movie.releaseYear}</p>
-                        <p><strong>Rating:</strong> {movie.voteAverage}/10</p>
+                        <p><strong>Rating:</strong> {movie.voteAverage}/10 ({movie.voteCount} votes)</p>
                         <p><strong>Genre:</strong> {movie.genres.join(', ')}</p>
+                        <p><strong>Tagline:</strong> {movie.tagline || "N/A"}</p>
+                        <p><strong>Overview:</strong> {movie.overview}</p>
+                        <p><strong>Runtime:</strong> {movie.runtime} minutes</p>
+                        <p><strong>Budget:</strong> ${movie.budget?.toLocaleString()}</p>
+                        <p><strong>Revenue:</strong> ${movie.revenue?.toLocaleString()}</p>
+                        <p><strong>Status:</strong> {movie.releaseStatus}</p>
+                        <p>
+                            <strong>IMDB:</strong>{" "}
+                            <a 
+                                href={`https://www.imdb.com/title/${movie.imdbId}`} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                            >
+                                View on IMDB
+                            </a>
+                        </p>
                         <Button onClick={handleBack} className="mt-3">Back</Button>
                     </Details>
                 </Col>
@@ -55,5 +71,12 @@ const Details = styled.div`
   p {
     font-size: 1.1rem;
     margin-bottom: 0.5rem;
+  }
+  a {
+    color: #007bff;
+    text-decoration: none;
+  }
+  a:hover {
+    text-decoration: underline;
   }
 `;

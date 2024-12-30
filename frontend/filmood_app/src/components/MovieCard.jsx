@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 function MovieCard({ movie }) {
     const [isInMyLibrary, setIsInMyLibrary] = useState(movie.isInMyLibrary);
+    const navigate = useNavigate();
 
     const handleAddToLibrary = async () => {  
         const movieData = {
@@ -15,6 +16,15 @@ function MovieCard({ movie }) {
             releaseYear: movie.releaseYear,
             voteAverage: movie.voteAverage,
             posterPath: movie.posterPath,
+
+            budget: movie.budget,
+            overview: movie.overview,
+            revenue: movie.revenue,
+            runtime: movie.runtime,
+            releaseStatus: movie.releaseStatus,
+            tagline: movie.tagline,
+            voteCount: movie.voteCount
+
         };
     
         try {
@@ -39,6 +49,30 @@ function MovieCard({ movie }) {
         }
     };
 
+    const getMovieDetails = async () => {
+    
+        try {
+            const response = await fetch(`http://localhost:8080/api/v1/movie/details/${movie.movieId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json', 
+                },
+                credentials: 'include',
+            });
+    
+            if (!response.ok) {
+                throw new Error('Failed to fetch movie details');
+            }
+    
+            const data = await response.json();
+           navigate('/details', { state: { movie: data } });
+    
+        } catch (error) {
+            console.error('Error fetching movie details:', error.message);
+        }
+    };
+
+
     return (
         <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
             <Card style={{ width: '18rem' }} className="my-3 mx-2 shadow-lg">
@@ -55,9 +89,8 @@ function MovieCard({ movie }) {
                             Add to Library
                         </Button>
                     )}
-                    <Link to={`/details`} state={{ movie }}>
-                        <Button className="btn-tertiary" variant="secondary">View Details</Button>
-                    </Link>
+                   
+                    <Button className="btn-tertiary" variant="secondary"  onClick={getMovieDetails}>View Details</Button>
                 </Card.Body>
             </Card>
         </motion.div>

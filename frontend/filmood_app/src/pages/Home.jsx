@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Container from 'react-bootstrap/Container';
 import { Splide, SplideSlide } from "@splidejs/react-splide";
 import "@splidejs/react-splide/css";
 import styled from "styled-components";
 import MovieCard from '../components/MovieCard';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation  } from 'react-router-dom';
 
 function Home({ category, movies }) {
     const location = useLocation();
@@ -40,11 +40,13 @@ function Home({ category, movies }) {
                         },
                     }}
                 >
-                    {displayMovies.map((movie) => (
-                        <SplideSlide key={movie.movieId}>
-                            <MovieCard movie={movie} />
-                        </SplideSlide>
-                    ))}
+                    {displayMovies.map((movie) => {
+                        return (
+                            <SplideSlide key={movie.movieId}>
+                                <MovieCard movie={movie} />
+                            </SplideSlide>
+                        );
+                    })}
                 </Splide>
             </Wrapper>
         </Container>
