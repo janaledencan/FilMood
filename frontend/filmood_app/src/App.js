@@ -12,6 +12,9 @@ import './App.css';
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [category, setCategory] = useState('');
+  const [movies, setMovies] = useState([]);
+  const [page, setPages] = useState({ totalPages: 0 });
+  
 
   useEffect(() => {
     const checkSession = () => {
@@ -31,15 +34,26 @@ function App() {
 
   return (
     <Router>
+      
       <Navigation 
         isLoggedIn={isLoggedIn} 
         setIsLoggedIn={setIsLoggedIn} 
         handleCategoryChange={handleCategoryChange}
+        setMovies={setMovies}
+        setPages={setPages}
       />
       <Routes>
         <Route path="/" element={<LoginRedirect isLoggedIn={isLoggedIn} />} />
         <Route path="/login" element={<LoginSignUp onLogin={handleLogin} />} />
-        <Route path="/home" element={<Home category={category} />} />
+        {/* <Route path="/home" element={<Home category={category} />} />  */}
+        <Route path="/home" element={<Home 
+            category={category} 
+            movies={movies} 
+            page={page} 
+            setMovies={setMovies} 
+            setPages={setPages} 
+            setCategory={setCategory} 
+          />}/>
         <Route path="/mood" element={isLoggedIn ? <Mood /> : <LoginSignUp onLogin={handleLogin} />} />
         <Route path="/profile" element={isLoggedIn ? <Profile /> : <LoginSignUp onLogin={handleLogin} />} />
         <Route path="/library" element={isLoggedIn ? <Library /> : <LoginSignUp onLogin={handleLogin} />} />

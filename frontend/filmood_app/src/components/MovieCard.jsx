@@ -3,9 +3,12 @@ import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { Toast, ToastContainer } from "react-bootstrap";
+import styled from 'styled-components';
 
 function MovieCard({ movie }) {
     const [isInMyLibrary, setIsInMyLibrary] = useState(movie.isInMyLibrary);
+    const [showToast, setShowToast] = useState(false);
     const navigate = useNavigate();
 
     const handleAddToLibrary = async () => {  
@@ -38,14 +41,13 @@ function MovieCard({ movie }) {
             });
     
             if (response.ok) {
-                alert("Movie added to your library!");
                 setIsInMyLibrary(true);
+                setShowToast(true); 
             } else {
-                alert("Failed to add movie to the library.");
+                console.error("Failed to add movie to the library.");
             }
         } catch (error) {
             console.error("Error adding movie to library:", error);
-            alert("An error occurred while adding the movie to your library.");
         }
     };
 
@@ -74,27 +76,54 @@ function MovieCard({ movie }) {
 
 
     return (
-        <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
-            <Card style={{ width: '18rem' }} className="my-3 mx-2 shadow-lg">
-                <Card.Img variant="top" className="movie-image" src={`https://image.tmdb.org/t/p/original/${movie.posterPath}`} />
-                <Card.Body>
-                    <Card.Title>{movie.title}</Card.Title>
-                    <Card.Text>
-                        <strong>Year:</strong> {movie.releaseYear} <br />
-                        <strong>Rating:</strong> {movie.voteAverage}/10 <br />
-                        <strong>Genre:</strong> {movie.genres.join(' ')}
-                    </Card.Text>
-                    {!isInMyLibrary && (
-                        <Button className="btn-primary me-2" onClick={handleAddToLibrary}>
-                            Add to Library
-                        </Button>
-                    )}
-                   
-                    <Button className="btn-tertiary" variant="secondary"  onClick={getMovieDetails}>View Details</Button>
-                </Card.Body>
-            </Card>
-        </motion.div>
+        <>
+            <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+                <Card style={{ width: '18rem' }} className="my-3 mx-2 shadow-lg">
+                    <Card.Img variant="top" className="movie-image" src={`https://image.tmdb.org/t/p/original/${movie.posterPath}`} />
+                    <Card.Body>
+                        <Card.Title><EllipsisText>{movie.title}</EllipsisText></Card.Title>
+                        <Card.Text>
+                            <strong>Year:</strong> {movie.releaseYear} <br />
+                            <strong>Rating:</strong> {movie.voteAverage}/10 <br />
+                            <strong>Genre:</strong> <EllipsisText>{movie.genres.join(', ')}</EllipsisText>
+                        </Card.Text>
+                        {!isInMyLibrary && (
+                            <Button className="btn-primary me-2" onClick={handleAddToLibrary}>
+                                Add to Library
+                            </Button>
+                        )}
+                    
+                        <Button className="btn-tertiary" variant="secondary"  onClick={getMovieDetails}>View Details</Button>
+                    </Card.Body>
+                </Card>
+            </motion.div>
+
+            
+            <ToastContainer
+                position="top-end" 
+                className="p-3"
+                style={{
+                    position: "fixed", 
+                    zIndex: 1050, 
+                }}
+            >
+                <Toast onClose={() => setShowToast(false)} show={showToast} delay={3000} autohide>
+                    <Toast.Header>
+                        <strong className="me-auto">Add to library</strong>
+                    </Toast.Header>
+                    <Toast.Body className='bg-dark'>Movie added to your library!</Toast.Body>
+                </Toast>
+            </ToastContainer>
+        </>
     );
 }
 
 export default MovieCard;
+
+
+const EllipsisText = styled.div`
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 250px; 
+`;
