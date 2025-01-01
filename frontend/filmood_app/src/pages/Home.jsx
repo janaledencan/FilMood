@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Container from 'react-bootstrap/Container';
 import Pagination from 'react-bootstrap/Pagination';
 import styled from "styled-components";
@@ -6,7 +6,7 @@ import MovieCard from '../components/MovieCard';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { handleCategoryChange } from '../components/Navigation'
 
-function Home({ category, movies, page, setMovies, setPages, setCategory }) {
+function Home({ category, movies, page, setMovies, setPages, setCategory, isMood=false }) {
     const location = useLocation();
 
     const locationCategory = location.state?.locationCategory;
@@ -20,47 +20,32 @@ function Home({ category, movies, page, setMovies, setPages, setCategory }) {
 
     // Pagination state
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 20;  // 20 movies per page
+
+    useEffect(() => {
+        handlePageChange(1);
+      }, []); 
 
     if (!displayMovies || !displayCategory) {
         return <div>Loading...</div>;
     }
 
     // Calculate paginated movies
-    const indexOfLastItem = currentPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentMovies = displayMovies.slice(indexOfFirstItem, indexOfLastItem);
-console.log("Current Movies to display:", currentMovies);
+    const currentMovies = displayMovies;
+    console.log("Current Movies to display:", currentMovies);
     const totalPages = Math.min(20, displayPages.totalPages); // Limit the number of pages to 20
 
-    // const handlePageChange = (pageNumber) => {
-    //     setCurrentPage(pageNumber);
-    //     //setCat
-    //     handleCategoryChange(displayCategory, pageNumber,displayMovies, displayPages, displayCategory, navigate);
-    //     //handleCategoryChange(displayCategory, pageNumber)
-    // };
-
-    // const handlePageChange = async (pageNumber) => {
-    //     setCurrentPage(pageNumber);
-    //     try {
-    //         await handleCategoryChange(displayCategory, pageNumber, setMovies, setPages, setCategory, navigate);
-    //     } catch (error) {
-    //         console.error('Error during page change:', error);
-    //     }
-    // };
     const handlePageChange = async (pageNumber) => {
         setCurrentPage(pageNumber);
         try {
             const response = await handleCategoryChange(displayCategory, pageNumber, setMovies, setPages, navigate);
-            console.log("Fetched page num:", pageNumber);
-            console.log("Fetched data from API:", response);
-            //console.log("Movies: ", movies);
+            // console.log("Fetched page num:", pageNumber);
+            // console.log("Fetched data from API:", response);
+            // console.log("Movies: ", movies);
            
         } catch (error) {
             console.error('Error during page change:', error);
         }
     };
-    
 
     return (
         <Container>
@@ -71,6 +56,8 @@ console.log("Current Movies to display:", currentMovies);
                         <MovieCard key={movie.movieId} movie={movie} />
                     ))}
                 </MoviesGrid>
+                { isMood===false &&
+                
                 <PaginationWrapper>
                     <Pagination>
                         <Pagination.First
@@ -103,6 +90,10 @@ console.log("Current Movies to display:", currentMovies);
                         />
                     </Pagination>
                 </PaginationWrapper>
+                
+                
+                }
+                
             </Wrapper>
         </Container>
     );

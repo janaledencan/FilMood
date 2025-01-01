@@ -69,6 +69,7 @@ function Mood() {
                 <Home
                     category={category}
                     movies={movies}
+                    isMood={true}
                 />
             )}
         </Container>
