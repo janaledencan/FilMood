@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Form, Button, Container } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import Alert from 'react-bootstrap/Alert'; 
 
 function LoginSignUp({ onLogin }) {
     const [isSignup, setIsSignup] = useState(false);
@@ -14,15 +15,37 @@ function LoginSignUp({ onLogin }) {
         gender: "Male",
     });
     const [passwordError, setPasswordError] = useState("");
+    const [emailError, setEmailError] = useState("");
+    const [alert, setAlert] = useState({ show: false, message: "", variant: "" });
     const navigate = useNavigate();
 
     const toggleMode = () => setIsSignup(!isSignup);
+
+    const [isVisible, setIsVisible] = useState(false);
+
+     useEffect(() => {
+        if (alert.show) {
+            setIsVisible(true);
+            const timer = setTimeout(() => {
+                setIsVisible(false); 
+                setTimeout(() => {
+                    setAlert((prev) => ({ ...prev, show: false }));
+                }, 300); 
+            }, 4000);
+
+            return () => clearTimeout(timer);
+        }
+    }, [alert.show]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
 
         if (name === "password") {
             validatePassword(value);
+        }
+
+        if (name === "email") {
+            validateEmail(value);
         }
 
         setFormData((prevData) => ({
@@ -32,14 +55,18 @@ function LoginSignUp({ onLogin }) {
     };
 
     const validatePassword = (password) => {
-        const minLength = 8;
+
+        const minLength = 6;
         const hasUpperCase = /[A-Z]/.test(password);
+        const hasLowerCase = /[a-z]/.test(password);
         const hasNumber = /\d/.test(password);
 
         if (password.length < minLength) {
-            setPasswordError("Password must be at least 8 characters long.");
+            setPasswordError("Password must be at least " + minLength +" characters long.");
         } else if (!hasUpperCase) {
             setPasswordError("Password must contain at least one uppercase letter.");
+        } else if (!hasLowerCase) {
+            setPasswordError("Password must contain at least one lowercase letter.");
         } else if (!hasNumber) {
             setPasswordError("Password must contain at least one number.");
         } else {
@@ -47,11 +74,35 @@ function LoginSignUp({ onLogin }) {
         }
     };
 
+    const validateEmail = (email) => {
+        const EMAIL_REGEX = /^[a-zA-Z0-9_!#$%&’*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$/;
+              
+        if (!email || email.trim() === "") {
+          setEmailError("Email address cannot be empty.");
+        } else if (!email.includes("@")) {
+          setEmailError("Email address must contain '@'.");
+        } else if (/^[.@]|[.@]$/.test(email)) {
+          setEmailError("Email cannot start or end with '.' or '@'.");
+        } else if (email.includes("..")) {
+          setEmailError("Email address cannot contain consecutive dots.");
+        } else if (!EMAIL_REGEX.test(email)) {
+          setEmailError("Email format is invalid. Please check the characters and domain.");
+        } else {
+            setEmailError("");
+        }
+    }
+      
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         if (passwordError) {
             console.error("Fix password errors before submitting.");
+            setAlert({
+                show: true,
+                message: `Failed to ${isSignup ? "sign up" : "log in"}`,
+                variant: "danger",
+            });
             return;
         }
 
@@ -74,24 +125,57 @@ function LoginSignUp({ onLogin }) {
             });
 
             if (!response.ok) {
-                throw new Error("Failed to " + (isSignup ? "sign up" : "log in"));
+                setAlert({
+                    show: true,
+                    message: `Failed to ${isSignup ? "sign up" : "log in"}`,
+                    variant: "danger",
+                });
+                return;
             }
 
             if (!isSignup) {
                 onLogin();
                 navigate("/mood");
-            }
-            else {
+            } else {
                 setIsSignup(false);
+                setAlert({
+                    show: true,
+                    message: "Sign-up successful! You can now log in.",
+                    variant: "success",
+                });
             }
         } catch (error) {
             console.error("Error:", error.message);
+            setAlert({
+                show: true,
+                message: "An unexpected error occurred. Please try again.",
+                variant: "danger",
+            });
         }
     };
 
     return (
+        <>
+           {alert.show && (
+                <Alert
+                    variant={alert.variant}
+                    dismissible
+                    onClose={() => {
+                        setIsVisible(false);
+                        setTimeout(() => setAlert({ ...alert, show: false }), 300);
+                    }}
+                    className={`text-center alert-animation ${
+                        isVisible ? "fade-in" : "fade-out"
+                    }`}
+                >
+                    {alert.message}
+                </Alert>
+            )} 
+        
+        
         <Container className="d-flex flex-column justify-content-center align-items-center vh-100">
-            <h2 className="text-center mb-4">{isSignup ? "Sign Up" : "Login"}</h2>
+            
+           <h2 className="text-center mb-4">{isSignup ? "Sign Up" : "Login"}</h2>
 
             <Form className="min-vw-75" onSubmit={handleSubmit}>
                 {isSignup && (
@@ -185,11 +269,17 @@ function LoginSignUp({ onLogin }) {
                         className="my-2 fixed-width"
                     />
                 </Form.Group>
-                <div className="error-placeholder">
+                {isSignup && (
+                    <div className={`error-container ${!(passwordError || emailError) ? 'hidden' : ''}`}>
                         {passwordError && (
-                            <div className="text-danger">{passwordError}</div>
+                            <div className="text-danger error-item">{passwordError}</div>
+                        )}
+                        {emailError && (
+                            <div className="text-danger error-item">{emailError}</div>
                         )}
                     </div>
+                )}
+                
                 <Button variant="primary" type="submit" className="w-100 mt-2">
                     {isSignup ? "Sign Up" : "Login"}
                 </Button>
@@ -201,6 +291,7 @@ function LoginSignUp({ onLogin }) {
                     : "Don't have an account? Sign Up"}
             </Button>
         </Container>
+    </>
     );
 }
 

@@ -42,6 +42,44 @@
   width: 300px;
 }
 
-.error-placeholder {
-  min-height: 1.5em; 
+.error-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  background-color: #ffecec;
+  border: 1px solid #ffb3b3;
+  border-radius: 5px;
+  padding: 0.75em;
+  margin-top: 1em;
+  width: 300px;
+  box-sizing: border-box;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.error-container.hidden {
+  opacity: 0;
+  pointer-events: none;
+  height: 0;
+  padding: 0;
+  margin-top: 0;
+}
+
+.error-item {
+  font-size: 0.9em;
+  line-height: 1.4; 
+}
+
+
+.alert-animation {
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.alert-animation.fade-in {
+  opacity: 1;
+}
+
+.alert-animation.fade-out {
+  opacity: 0;
 }
