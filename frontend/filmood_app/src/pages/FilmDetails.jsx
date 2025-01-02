@@ -26,8 +26,8 @@ function FilmDetails() {
                     />
                 </Col>
                 <Col md={8}>
-                    <Details>
-                        <h2>{movie.title}</h2>
+                    <Details className="ms-4 mt-4">
+                        <h2 className="mb-4">{movie.title}</h2>
                         <p><strong>Year:</strong> {movie.releaseYear}</p>
                         <p><strong>Rating:</strong> {movie.voteAverage}/10 ({movie.voteCount} votes)</p>
                         <p><strong>Genre:</strong> {movie.genres.join(', ')}</p>

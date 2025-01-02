@@ -21,6 +21,16 @@ function Home({ category, movies, page, setMovies, setPages, setCategory, isMood
     // Pagination state
     const [currentPage, setCurrentPage] = useState(1);
 
+    const handlePageChange = async (pageNumber) => {
+        setCurrentPage(pageNumber);
+        try {
+            const response = await handleCategoryChange(displayCategory, pageNumber, setMovies, setPages, navigate);
+           
+        } catch (error) {
+            console.error('Error during page change:', error);
+        }
+    };
+
     useEffect(() => {
         handlePageChange(1);
       }, []); 
@@ -34,18 +44,7 @@ function Home({ category, movies, page, setMovies, setPages, setCategory, isMood
     console.log("Current Movies to display:", currentMovies);
     const totalPages = Math.min(20, displayPages.totalPages); // Limit the number of pages to 20
 
-    const handlePageChange = async (pageNumber) => {
-        setCurrentPage(pageNumber);
-        try {
-            const response = await handleCategoryChange(displayCategory, pageNumber, setMovies, setPages, navigate);
-            // console.log("Fetched page num:", pageNumber);
-            // console.log("Fetched data from API:", response);
-            // console.log("Movies: ", movies);
-           
-        } catch (error) {
-            console.error('Error during page change:', error);
-        }
-    };
+    
 
     return (
         <Container>

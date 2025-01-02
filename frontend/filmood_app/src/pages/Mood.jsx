@@ -50,7 +50,7 @@ function Mood() {
 
     return (
         <Container>
-            <Title>How are you feeling today?</Title>
+            <Title className="mt-5">How are you feeling today?</Title>
             <Row className="justify-content-center">
                 {moods.map((mood, index) => (
                     <Col key={index} xs={6} sm={4} md={2} className="text-center my-3">

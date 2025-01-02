@@ -34,9 +34,7 @@ import logo from '../logo.svg';
     }
 
 function Navigation({ isLoggedIn, setIsLoggedIn, setMovies, setPages }) {
-    // const [category, setCategory] = useState('');
-    // const [movies, setMovies] = useState([]);
-    // const [page, setPages] = useState([]);
+    
     const navigate = useNavigate();
 
     const handleLogout = async () => {
