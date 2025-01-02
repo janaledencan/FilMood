@@ -51,6 +51,8 @@ code {
 .navigation {
   background-color: var(--secondary-color) !important;
   color: var(--text-color) !important;
+  box-shadow: 0 4px 8px rgba(255, 255, 0, 0.6);
+  
 }
 
 .navigation .nav-link {

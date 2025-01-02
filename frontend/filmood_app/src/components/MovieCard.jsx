@@ -78,7 +78,7 @@ function MovieCard({ movie }) {
     return (
         <>
             <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
-                <Card style={{ width: '18rem' }} className="my-3 mx-2 shadow-lg">
+                <Card className="my-3 mx-2 shadow-lg">
                     <Card.Img variant="top" className="movie-image" src={`https://image.tmdb.org/t/p/original/${movie.posterPath}`} />
                     <Card.Body>
                         <Card.Title><EllipsisText>{movie.title}</EllipsisText></Card.Title>
@@ -87,12 +87,13 @@ function MovieCard({ movie }) {
                             <strong>Rating:</strong> {movie.voteAverage}/10 <br />
                             <strong>Genre:</strong> <EllipsisText>{movie.genres.join(', ')}</EllipsisText>
                         </Card.Text>
+                        
                         {!isInMyLibrary && (
-                            <Button className="btn-primary me-2" onClick={handleAddToLibrary}>
+                            <Button className="btn-primary me-3" onClick={handleAddToLibrary}>
                                 Add to Library
                             </Button>
                         )}
-                    
+                
                         <Button className="btn-tertiary" variant="secondary"  onClick={getMovieDetails}>View Details</Button>
                     </Card.Body>
                 </Card>
@@ -108,10 +109,12 @@ function MovieCard({ movie }) {
                 }}
             >
                 <Toast onClose={() => setShowToast(false)} show={showToast} delay={3000} autohide>
-                    <Toast.Header>
-                        <strong className="me-auto">Add to library</strong>
+                    <Toast.Header style={{ backgroundColor: 'rgba(255, 255, 0, 0.6)' }}>
+                    <strong className="me-auto" >
+                        Add to library
+                    </strong>
                     </Toast.Header>
-                    <Toast.Body className='bg-dark'>Movie added to your library!</Toast.Body>
+                    <Toast.Body className='bg-dark'><strong>{movie.title}</strong> added to your library!</Toast.Body>
                 </Toast>
             </ToastContainer>
         </>

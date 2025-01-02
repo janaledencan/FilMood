@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import Container from 'react-bootstrap/Container';
 import Pagination from 'react-bootstrap/Pagination';
+import Col from 'react-bootstrap/Col';
 import styled from "styled-components";
 import MovieCard from '../components/MovieCard';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { handleCategoryChange } from '../components/Navigation'
+
 
 function Home({ category, movies, page, setMovies, setPages, setCategory, isMood=false }) {
     const location = useLocation();
@@ -36,7 +38,7 @@ function Home({ category, movies, page, setMovies, setPages, setCategory, isMood
       }, []); 
 
     if (!displayMovies || !displayCategory) {
-        return <div>Loading...</div>;
+        return <div className='ms-4 mt-4'>Loading...</div>;
     }
 
     // Calculate paginated movies
@@ -50,15 +52,20 @@ function Home({ category, movies, page, setMovies, setPages, setCategory, isMood
         <Container>
             <Wrapper>
                 <h2>{displayCategory.replace('_', ' ').toUpperCase()}</h2>
-                <MoviesGrid>
-                    {currentMovies.map((movie) => (
-                        <MovieCard key={movie.movieId} movie={movie} />
+
+                <MoviesGrid className="movies-grid">
+                    {currentMovies.map((movie, index) => (
+                        <Col key={index} className="movie-card">
+                            <MovieCard key={movie.movieId} movie={movie} />
+                        </Col>
                     ))}
                 </MoviesGrid>
                 { isMood===false &&
                 
                 <PaginationWrapper>
+
                     <Pagination>
+                        {/* First and Previous Arrows */}
                         <Pagination.First
                             onClick={() => handlePageChange(1)}
                             disabled={currentPage === 1}
@@ -67,18 +74,25 @@ function Home({ category, movies, page, setMovies, setPages, setCategory, isMood
                             onClick={() => handlePageChange(currentPage - 1)}
                             disabled={currentPage === 1}
                         />
-                        {Array.from({ length: totalPages }).map((_, index) => {
-                            const pageNum = index + 1;
-                            return (
-                                <Pagination.Item
-                                    key={pageNum}
-                                    active={pageNum === currentPage}
-                                    onClick={() => handlePageChange(pageNum)}
-                                >
-                                    {pageNum}
-                                </Pagination.Item>
-                            );
-                        })}
+
+                        {/* Previous Page */}
+                        {currentPage > 1 && (
+                            <Pagination.Item onClick={() => handlePageChange(currentPage - 1)}>
+                            {currentPage - 1}
+                            </Pagination.Item>
+                        )}
+
+                        {/* Current Page */}
+                        <Pagination.Item active>{currentPage}</Pagination.Item>
+
+                        {/* Next Page */}
+                        {currentPage < totalPages && (
+                            <Pagination.Item onClick={() => handlePageChange(currentPage + 1)}>
+                            {currentPage + 1}
+                            </Pagination.Item>
+                        )}
+
+                        {/* Next and Last Arrows */}
                         <Pagination.Next
                             onClick={() => handlePageChange(currentPage + 1)}
                             disabled={currentPage === totalPages}
@@ -89,7 +103,6 @@ function Home({ category, movies, page, setMovies, setPages, setCategory, isMood
                         />
                     </Pagination>
                 </PaginationWrapper>
-                
                 
                 }
                 
@@ -106,8 +119,8 @@ const Wrapper = styled.div`
 
 const MoviesGrid = styled.div`
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+    gap: 1rem;
     margin-bottom: 2rem;
 `;
 

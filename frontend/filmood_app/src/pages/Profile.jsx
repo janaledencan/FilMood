@@ -77,11 +77,11 @@ function Profile() {
     };
 
     return (
-        <Container 
+    <Container 
         fluid 
         className="d-flex justify-content-center align-items-center vh-100 "
     >
-        <Card style={{ maxWidth: "500px", width: "100%", padding: "1.5rem",  boxShadow: "0 4px 8px rgba(255, 255, 0, 0.6)", }} >
+        <Card style={{ maxWidth: "500px", width: "100%", padding: "1.5rem",  boxShadow: "0 0 20px rgba(255, 255, 0, 0.6)", }} >
             <h2 className="mb-4 text-center">Profile</h2>
 
             {successMessage && (

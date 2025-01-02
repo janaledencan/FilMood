@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { Container, Button, Row, Col } from "react-bootstrap";
 import styled from "styled-components";
 import Home from "./Home";
