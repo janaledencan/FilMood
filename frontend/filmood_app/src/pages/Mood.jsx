@@ -7,6 +7,7 @@ import Home from "./Home";
 function Mood() {
     const [movies, setMovies] = useState([]);
     const [category, setCategory] = useState("");
+    const [activeMood, setActiveMood] = useState(""); 
     const location = useLocation(); 
 
     const moods = [
@@ -27,6 +28,7 @@ function Mood() {
     }, [location.state]);
 
     const handleMoodClick = async (moodLabel) => {
+        setActiveMood(moodLabel);
         const pageNumber = 1;
         const formattedMoodLabel = moodLabel.toLowerCase().replace(/\s+/g, '-');
         const url = `http://localhost:8080/api/v1/movie/mood/${formattedMoodLabel}?number=${pageNumber}`;
@@ -56,6 +58,7 @@ function Mood() {
                     <Col key={index} xs={6} sm={4} md={2} className="text-center my-3">
                         <StyledButton
                             variant="outline-secondary"
+                            isActive={activeMood === mood.label}
                             onClick={() => handleMoodClick(mood.label)} 
                         >
                             <span className="emoji">{mood.icon}</span>
@@ -92,6 +95,13 @@ const StyledButton = styled(Button)`
   align-items: center;
   border-radius: 50%;
   margin: auto;
+  background-color: ${(props) => (props.isActive ? "gray" : "")};
+  color: ${(props) => (props.isActive ? "white" : "black")};
+  border: ${(props) => (props.isActive ? "2px solid gray" : "1px solid gray")};
+
+  &:hover {
+    background-color: ${(props) => (props.isActive ? "gray" : "#f0f0f0")};
+  }
 `;
 
 const Description = styled.p`
