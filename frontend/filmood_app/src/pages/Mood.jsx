@@ -31,7 +31,7 @@ function Mood() {
         setActiveMood(moodLabel);
         const pageNumber = 1;
         const formattedMoodLabel = moodLabel.toLowerCase().replace(/\s+/g, '-');
-        const url = `http://localhost:8080/api/v1/movie/mood/${formattedMoodLabel}?number=${pageNumber}`;
+        const url = `http://localhost:8080/api/v1/movie/mood/${formattedMoodLabel}?number=1`;
 
         try {
             const response = await fetch(url, {
@@ -43,7 +43,7 @@ function Mood() {
             });
 
             const data = await response.json();
-            setMovies(data.content);
+            setMovies(data.content || []);
             setCategory(moodLabel);
         } catch (error) {
             console.error("Error fetching data:", error);
@@ -86,7 +86,9 @@ const Title = styled.h2`
   margin: 2rem 0;
 `;
 
-const StyledButton = styled(Button)`
+const StyledButton = styled(Button).withConfig({
+    shouldForwardProp: (prop) => prop !== 'isActive',
+  })`
   font-size: 2rem;
   width: 4rem;
   height: 4rem;
