@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate, useNavigate } from 'react-router-dom';
 import Navigation from './components/Navigation';
 import LoginSignUp from './pages/LoginSignUp';
 import Home from './pages/Home';
@@ -12,6 +12,11 @@ import './App.css';
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [category, setCategory] = useState('');
+  const [movies, setMovies] = useState([]);
+  const [page, setPages] = useState({ totalPages: 0 });
+  const handleLogin = () => setIsLoggedIn(true);
+  const handleCategoryChange = (newCategory) => setCategory(newCategory);
+
 
   useEffect(() => {
     const checkSession = () => {
@@ -26,8 +31,7 @@ function App() {
     checkSession(); 
   }, []); 
 
-  const handleLogin = () => setIsLoggedIn(true);
-  const handleCategoryChange = (newCategory) => setCategory(newCategory);
+  
 
   return (
     <Router>
@@ -35,14 +39,26 @@ function App() {
         isLoggedIn={isLoggedIn} 
         setIsLoggedIn={setIsLoggedIn} 
         handleCategoryChange={handleCategoryChange}
+        setMovies={setMovies}
+        setPages={setPages}
       />
       <Routes>
         <Route path="/" element={<LoginRedirect isLoggedIn={isLoggedIn} />} />
-        <Route path="/login" element={<LoginSignUp onLogin={handleLogin} />} />
-        <Route path="/home" element={<Home category={category} />} />
-        <Route path="/mood" element={isLoggedIn ? <Mood /> : <LoginSignUp onLogin={handleLogin} />} />
-        <Route path="/profile" element={isLoggedIn ? <Profile /> : <LoginSignUp onLogin={handleLogin} />} />
-        <Route path="/library" element={isLoggedIn ? <Library /> : <LoginSignUp onLogin={handleLogin} />} />
+        <Route 
+          path="/login" 
+          element={isLoggedIn ? <Navigate to="/mood" replace /> : <LoginSignUp onLogin={handleLogin} />} 
+        />
+        <Route path="/home" element={<Home 
+            category={category} 
+            movies={movies} 
+            page={page} 
+            setMovies={setMovies} 
+            setPages={setPages} 
+            setCategory={setCategory} 
+          />} />
+        <Route path="/mood" element={isLoggedIn ? <Mood /> : <Navigate to="/login" replace />} />
+        <Route path="/profile" element={isLoggedIn ? <Profile /> : <Navigate to="/login" replace />} />
+        <Route path="/library" element={isLoggedIn ? <Library /> : <Navigate to="/login" replace />} />
         <Route path="/details" element={<FilmDetails />} />
       </Routes>
     </Router>
@@ -53,10 +69,10 @@ function LoginRedirect({ isLoggedIn }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (isLoggedIn || (isLoggedIn && window.location.pathname === '/login')) {
-      navigate('/mood'); 
+    if (isLoggedIn) {
+      navigate('/mood', { replace: true }); 
     } else {
-      navigate('/login'); 
+      navigate('/login', { replace: true }); 
     }
   }, [isLoggedIn, navigate]);
 

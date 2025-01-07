@@ -6,6 +6,7 @@ import ButtonGroup from "react-bootstrap/ButtonGroup";
 import { Splide, SplideSlide } from "@splidejs/react-splide";
 import "@splidejs/react-splide/css";
 import { useNavigate } from "react-router-dom";
+import styled from 'styled-components';
 
 function Library() {
     const [library, setLibrary] = useState([]);
@@ -13,12 +14,12 @@ function Library() {
     const navigate = useNavigate();
 
     const pageNumber = 1;
-    const pageSize = 10;
+    const pageSize = 500;
     const sort = "userRating";
     const direction = "ASC";
     const userRating = filter === "rated" ? 5 : 0;
 
-    const onMovieClick = (movie) => {
+    const onViewDetailsClick = (movie) => {
         navigate(`/details`, { state: { movie } });
     };
 
@@ -116,17 +117,21 @@ function Library() {
                 }}
             >
                 {filteredLibrary.map((movie) => (
-                    <SplideSlide key={movie.movieId}  onClick={() => onMovieClick(movie)}>
-                        <Card>
+                    <SplideSlide key={movie.movieId}>
+                        <Card style={{ height: "100%" }}>
                             <Card.Img
                                 variant="top"
                                 src={`https://image.tmdb.org/t/p/w780/${movie.posterPath}`}
+                                style={{
+                                    height: "250px", 
+                                    objectFit: "cover", 
+                                }}
                             />
                             <Card.Body>
-                                <Card.Title>{movie.title}</Card.Title>
+                                <Card.Title><EllipsisText>{movie.title}</EllipsisText></Card.Title>
                                 <Card.Text>
                                     <strong>Year:</strong> {movie.releaseYear} <br />
-                                    <strong>Genre:</strong> {movie.genres.join(", ")}
+                                    <strong>Genre:</strong> <EllipsisText>{movie.genres.join(', ')}</EllipsisText>
                                 </Card.Text>
                                 <div>
                                     <strong>Grade: </strong>
@@ -144,6 +149,7 @@ function Library() {
                                         </span>
                                     ))}
                                 </div>
+                                <Button className="btn-tertiary mt-4" variant="secondary" onClick={() => onViewDetailsClick(movie)}>View Details</Button>
                             </Card.Body>
                         </Card>
                     </SplideSlide>
@@ -154,3 +160,11 @@ function Library() {
 }
 
 export default Library;
+
+
+const EllipsisText = styled.div`
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 250px; 
+`;

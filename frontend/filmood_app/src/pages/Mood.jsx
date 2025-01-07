@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { Container, Button, Row, Col } from "react-bootstrap";
 import styled from "styled-components";
 import Home from "./Home";
@@ -7,6 +7,7 @@ import Home from "./Home";
 function Mood() {
     const [movies, setMovies] = useState([]);
     const [category, setCategory] = useState("");
+    const [activeMood, setActiveMood] = useState(""); 
     const location = useLocation(); 
 
     const moods = [
@@ -27,9 +28,10 @@ function Mood() {
     }, [location.state]);
 
     const handleMoodClick = async (moodLabel) => {
+        setActiveMood(moodLabel);
         const pageNumber = 1;
         const formattedMoodLabel = moodLabel.toLowerCase().replace(/\s+/g, '-');
-        const url = `http://localhost:8080/api/v1/movie/mood/${formattedMoodLabel}?number=${pageNumber}`;
+        const url = `http://localhost:8080/api/v1/movie/mood/${formattedMoodLabel}?number=1`;
 
         try {
             const response = await fetch(url, {
@@ -41,7 +43,7 @@ function Mood() {
             });
 
             const data = await response.json();
-            setMovies(data.content);
+            setMovies(data.content || []);
             setCategory(moodLabel);
         } catch (error) {
             console.error("Error fetching data:", error);
@@ -50,12 +52,13 @@ function Mood() {
 
     return (
         <Container>
-            <Title>How are you feeling today?</Title>
+            <Title className="mt-5">How are you feeling today?</Title>
             <Row className="justify-content-center">
                 {moods.map((mood, index) => (
                     <Col key={index} xs={6} sm={4} md={2} className="text-center my-3">
                         <StyledButton
                             variant="outline-secondary"
+                            isActive={activeMood === mood.label}
                             onClick={() => handleMoodClick(mood.label)} 
                         >
                             <span className="emoji">{mood.icon}</span>
@@ -69,6 +72,7 @@ function Mood() {
                 <Home
                     category={category}
                     movies={movies}
+                    isMood={true}
                 />
             )}
         </Container>
@@ -82,7 +86,9 @@ const Title = styled.h2`
   margin: 2rem 0;
 `;
 
-const StyledButton = styled(Button)`
+const StyledButton = styled(Button).withConfig({
+    shouldForwardProp: (prop) => prop !== 'isActive',
+  })`
   font-size: 2rem;
   width: 4rem;
   height: 4rem;
@@ -91,6 +97,13 @@ const StyledButton = styled(Button)`
   align-items: center;
   border-radius: 50%;
   margin: auto;
+  background-color: ${(props) => (props.isActive ? "gray" : "")};
+  color: ${(props) => (props.isActive ? "white" : "black")};
+  border: ${(props) => (props.isActive ? "2px solid gray" : "1px solid gray")};
+
+  &:hover {
+    background-color: ${(props) => (props.isActive ? "gray" : "#f0f0f0")};
+  }
 `;
 
 const Description = styled.p`
