@@ -1,11 +1,10 @@
 package hr.ferit.filmood.rest.impl.movie;
 
-import hr.ferit.filmood.common.rest.PagedResponse;
 import hr.ferit.filmood.rest.api.movie.MovieController;
-import hr.ferit.filmood.rest.api.movie.dto.LibraryMovieDTO;
 import hr.ferit.filmood.rest.api.movie.dto.MovieDetailedDTO;
 import hr.ferit.filmood.rest.api.movie.request.AddMovieToLibraryRequest;
 import hr.ferit.filmood.rest.api.movie.request.RatingRequest;
+import hr.ferit.filmood.rest.api.movie.response.LibraryPagedResponse;
 import hr.ferit.filmood.rest.api.movie.response.MoviePagedResponse;
 import hr.ferit.filmood.service.MovieService;
 import org.springframework.security.core.Authentication;
@@ -41,7 +40,7 @@ public class MovieControllerImpl implements MovieController {
     }
 
     @Override
-    public PagedResponse<LibraryMovieDTO> getLibrary(Boolean ratedOnly, Integer page, Integer size, String sort, String direction, Integer userRating, Authentication authentication) {
+    public LibraryPagedResponse getLibrary(Boolean ratedOnly, Integer page, Integer size, String sort, String direction, Integer userRating, Authentication authentication) {
         return movieService.getLibrary(ratedOnly, page, size, sort, direction, userRating, authentication);
     }
 

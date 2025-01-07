@@ -2,7 +2,6 @@ package hr.ferit.filmood.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hr.ferit.filmood.common.rest.PageDTO;
-import hr.ferit.filmood.common.rest.PagedResponse;
 import hr.ferit.filmood.common.rest.movie.LibraryPageQuery;
 import hr.ferit.filmood.configuration.properties.FilMoodProperties;
 import hr.ferit.filmood.persistence.entity.GenreEntity;
@@ -18,6 +17,7 @@ import hr.ferit.filmood.rest.api.movie.dto.MovieDTO;
 import hr.ferit.filmood.rest.api.movie.dto.MovieDetailedDTO;
 import hr.ferit.filmood.rest.api.movie.request.AddMovieToLibraryRequest;
 import hr.ferit.filmood.rest.api.movie.request.RatingRequest;
+import hr.ferit.filmood.rest.api.movie.response.LibraryPagedResponse;
 import hr.ferit.filmood.rest.api.movie.response.MovieApiPagedResponse;
 import hr.ferit.filmood.rest.api.movie.response.MoviePagedResponse;
 import hr.ferit.filmood.service.exception.MovieException;
@@ -165,7 +165,7 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    public PagedResponse<LibraryMovieDTO> getLibrary(Boolean ratedOnly, Integer page, Integer size, String sort, String direction, Integer userRating, Authentication authentication) {
+    public LibraryPagedResponse getLibrary(Boolean ratedOnly, Integer page, Integer size, String sort, String direction, Integer userRating, Authentication authentication) {
 
         LibraryPageQuery query = new LibraryPageQuery(page, size, sort, direction, userRating);
         Page<MovieEntity> moviesPage;
@@ -194,7 +194,7 @@ public class MovieServiceImpl implements MovieService {
             ));
         }
 
-        return new PagedResponse<>(PageDTO.from(moviesPage), library);
+        return new LibraryPagedResponse(PageDTO.from(moviesPage), library);
     }
 
     @Override
@@ -270,7 +270,7 @@ public class MovieServiceImpl implements MovieService {
                         apiMovie.title(),
                         genres,
                         apiMovie.movieId(),
-                        Integer.valueOf(apiMovie.releaseDate().substring(0, 4)),
+                        Integer.valueOf(!apiMovie.releaseDate().isBlank() ? apiMovie.releaseDate().substring(0, 4): "2026"),
                         apiMovie.voteAverage(),
                         apiMovie.posterPath(),
                         library.contains(apiMovie.movieId())
