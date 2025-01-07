@@ -14,7 +14,7 @@ function Library() {
     const navigate = useNavigate();
 
     const pageNumber = 1;
-    const pageSize = 10;
+    const pageSize = 500;
     const sort = "userRating";
     const direction = "ASC";
     const userRating = filter === "rated" ? 5 : 0;
