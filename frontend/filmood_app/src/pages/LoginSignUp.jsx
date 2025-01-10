@@ -125,9 +125,37 @@ function LoginSignUp({ onLogin }) {
             });
 
             if (!response.ok) {
+                if (!isSignup) {
+                    setAlert({
+                        show: true,
+                        message: `Incorrect username or password`,
+                        variant: "danger",
+                    });
+                    return
+                }
+                let usernameNotUnique = "username already exists";
+                let emailNotUnique = "email already exists";
+                let serverError = "server is not responding";
+                let errorMessage = "blank fields are not allowed";
+
+                if(response.status === 500) {
+                    errorMessage = serverError;
+                }
+
+                const data = await response.json();
+                const errorKey = data.errorKey;
+
+                if(errorKey === "user__username_already_exists") {
+                    errorMessage = usernameNotUnique;
+                }
+
+                if(errorKey === "user__email_already_exists") {
+                    errorMessage = emailNotUnique;
+                }
+
                 setAlert({
                     show: true,
-                    message: `Failed to ${isSignup ? "sign up" : "log in"}`,
+                    message: `Failed to sign up, ${errorMessage}`,
                     variant: "danger",
                 });
                 return;
@@ -188,6 +216,7 @@ function LoginSignUp({ onLogin }) {
                                 value={formData.username}
                                 onChange={handleChange}
                                 className="my-2 fixed-width"
+                                required
                             />
                         </Form.Group>
                         <Form.Group controlId="email">
@@ -208,6 +237,7 @@ function LoginSignUp({ onLogin }) {
                                 value={formData.firstName}
                                 onChange={handleChange}
                                 className="my-2 fixed-width"
+                                required
                             />
                         </Form.Group>
                         <Form.Group controlId="lastName">
@@ -218,6 +248,7 @@ function LoginSignUp({ onLogin }) {
                                 value={formData.lastName}
                                 onChange={handleChange}
                                 className="my-2 fixed-width"
+                                required
                             />
                         </Form.Group>
                         <Form.Group controlId="gender">
@@ -241,6 +272,8 @@ function LoginSignUp({ onLogin }) {
                                 value={formData.age}
                                 onChange={handleChange}
                                 className="my-2 fixed-width"
+                                min="1"
+                                max="100"
                             />
                         </Form.Group>
                     </>
@@ -255,6 +288,7 @@ function LoginSignUp({ onLogin }) {
                             value={formData.username}
                             onChange={handleChange}
                             className="my-2 fixed-width"
+                            required
                         />
                     </Form.Group>
                 )}
@@ -267,6 +301,7 @@ function LoginSignUp({ onLogin }) {
                         value={formData.password}
                         onChange={handleChange}
                         className="my-2 fixed-width"
+                        required
                     />
                 </Form.Group>
                 {isSignup && (
