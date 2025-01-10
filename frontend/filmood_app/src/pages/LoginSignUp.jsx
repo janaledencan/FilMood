@@ -273,7 +273,7 @@ function LoginSignUp({ onLogin }) {
                                 onChange={handleChange}
                                 className="my-2 fixed-width"
                                 min="1"
-                                max="100"
+                                max="120"
                             />
                         </Form.Group>
                     </>
